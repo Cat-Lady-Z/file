@@ -25,7 +25,7 @@ deylop-prod:
   stage: deylop-prod
   script:
     - mvn clean package -Dmaven.test.skip=true
-    - scp ./target/manage-server-1.0.0.jar "root@47.107.255.9:/data/proc/manage-server"
+    - scp ./target/manage-server-1.0.0.jar "root@172.16.220.204:/data/proc/manage-server"
     - ssh root@172.16.220.204 "/data/proc/manage-server/starter.sh restart"
   artifacts:
     paths:
