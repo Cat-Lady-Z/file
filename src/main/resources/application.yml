@@ -1,0 +1,40 @@
+# Tomcat
+server:
+    tomcat:
+        uri-encoding: UTF-8
+        max-threads: 1000
+        min-spare-threads: 30
+    port: 8081
+    #connection-timeout: 5000s
+    servlet:
+      context-path: /manage
+
+spring:
+    application:
+        name: manage-server
+    # 环境 dev|test|prod
+    profiles:
+        #active: @spring.profiles.active@
+        active: dev
+    # jackson时间格式化
+    jackson:
+        time-zone: GMT+8
+        date-format: yyyy-MM-dd HH:mm:ss
+    servlet:
+        multipart:
+            max-file-size: 100MB
+            max-request-size: 100MB
+            enabled: true
+
+#mybatis
+mybatis:
+  mapper-locations: classpath*:mapper/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  typeAliasesPackage: com.lbx.distribution.manageserver.entity
+  #配置分页插件pagehelper
+  pagehelper:
+      helperDialect: mysql
+      reasonable: true
+      supportMethodsArguments: true
+      params: count=countSq
+

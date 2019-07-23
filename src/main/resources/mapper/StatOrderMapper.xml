@@ -1,0 +1,240 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.StatOrderMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.order.StatOrder">
+    <id column="channel_id" property="channelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="merchant_id" property="merchantId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="order_num" property="orderNum" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+  </resultMap>
+
+  <!--按照小时维度查询统计数据-->
+  <select id="statOrderCountByHour" resultMap="BaseResultMap">
+    SELECT
+    sum(order_num) as order_num, DATE_FORMAT(create_time,'%Y-%m-%d %H') as create_time
+    FROM stat_order
+    WHERE
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="merchantId != null">
+      AND merchant_id = #{merchantId,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      AND company_id = #{companyId,jdbcType=INTEGER}
+    </if>
+    <if test="companyIds != null">
+      company_id IN
+      <foreach item="companyId" index="index" collection="companyIds"
+               open="(" separator="," close=")"> #{companyId}</foreach>
+    </if>
+    <if test="shopId != null">
+      AND shop_id = #{shopId,jdbcType=INTEGER}
+    </if>
+    <if test="cityCode != null">
+      AND city_code = #{cityCode,jdbcType=CHAR}
+    </if>
+    <if test="startTime != null ">
+      AND create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null ">
+      AND create_time &lt;= #{endTime}
+    </if>
+    GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d %H')
+  </select>
+
+  <!--按照天维度查询统计数据-->
+  <select id="statOrderCountByDay" resultMap="BaseResultMap">
+    SELECT
+    sum(order_num) as `order_num`,DATE_FORMAT(create_time,'%Y-%m-%d') as create_time
+    FROM stat_order
+    WHERE
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="merchantId != null">
+      AND merchant_id = #{merchantId,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      AND company_id = #{companyId,jdbcType=INTEGER}
+    </if>
+    <if test="companyIds != null">
+      company_id IN
+      <foreach item="companyId" index="index" collection="companyIds"
+               open="(" separator="," close=")"> #{companyId}</foreach>
+    </if>
+    <if test="shopId != null">
+      AND shop_id = #{shopId,jdbcType=INTEGER}
+    </if>
+    <if test="cityCode != null">
+      AND city_code = #{cityCode,jdbcType=CHAR}
+    </if>
+    <if test="startTime != null ">
+      AND create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null ">
+      AND create_time &lt;= #{endTime}
+    </if>
+    GROUP BY DATE_FORMAT(create_time,'%Y-%m-%d')
+  </select>
+
+  <!--按照月份维度查询统计数据-->
+  <select id="statOrderCountByMonth" resultMap="BaseResultMap">
+    SELECT
+    sum(order_num) as order_num,DATE_FORMAT(create_time,'%Y-%m') as create_time
+    FROM stat_order
+    WHERE
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="merchantId != null">
+      AND merchant_id = #{merchantId,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      AND company_id = #{companyId,jdbcType=INTEGER}
+    </if>
+    <if test="companyIds != null">
+      company_id IN
+      <foreach item="companyId" index="index" collection="companyIds"
+               open="(" separator="," close=")"> #{companyId}</foreach>
+    </if>
+    <if test="shopId != null">
+      AND shop_id = #{shopId,jdbcType=INTEGER}
+    </if>
+    <if test="cityCode != null">
+      AND city_code = #{cityCode,jdbcType=CHAR}
+    </if>
+    <if test="startTime != null ">
+      AND create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null ">
+      AND create_time &lt;= #{endTime}
+    </if>
+    GROUP BY DATE_FORMAT(create_time,'%Y-%m')
+  </select>
+
+  <!--按照年份维度查询统计数据-->
+  <select id="statOrderCountByYear" resultMap="BaseResultMap">
+    SELECT
+    sum(order_num) as order_num,DATE_FORMAT(create_time,'%Y') as create_time
+    FROM stat_order
+    WHERE
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="merchantId != null">
+      AND merchant_id = #{merchantId,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      AND company_id = #{companyId,jdbcType=INTEGER}
+    </if>
+    <if test="companyIds != null">
+      company_id IN
+      <foreach item="companyId" index="index" collection="companyIds"
+               open="(" separator="," close=")"> #{companyId}</foreach>
+    </if>
+    <if test="shopId != null">
+      AND shop_id = #{shopId,jdbcType=INTEGER}
+    </if>
+    <if test="cityCode != null">
+      AND city_code = #{cityCode,jdbcType=CHAR}
+    </if>
+    <if test="startTime != null ">
+      AND create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null ">
+      AND create_time &lt;= #{endTime}
+    </if>
+    GROUP BY DATE_FORMAT(create_time,'%Y')
+  </select>
+
+  <insert id="insertSelective" parameterType="com.lbx.distribution.manageserver.entity.order.StatOrder">
+    insert into stat_order
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="merchantId != null">
+        merchant_id,
+      </if>
+      <if test="companyId != null">
+        company_id,
+      </if>
+      <if test="shopId != null">
+        shop_id,
+      </if>
+      <if test="cityCode != null">
+        city_code,
+      </if>
+      <if test="orderNum != null">
+        order_num,
+      </if>
+      <if test="createTime != null">
+        create_time
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="channelId != null">
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="merchantId != null">
+        #{merchantId,jdbcType=INTEGER},
+      </if>
+      <if test="companyId != null">
+        #{companyId,jdbcType=INTEGER},
+      </if>
+      <if test="shopId != null">
+        #{shopId,jdbcType=INTEGER},
+      </if>
+      <if test="cityCode != null">
+        #{cityCode,jdbcType=CHAR},
+      </if>
+      <if test="orderNum != null">
+        #{orderNum,jdbcType=INTEGER},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP}
+      </if>
+    </trim>
+  </insert>
+
+  <!--删除数据-->
+  <delete id="delete" parameterType="com.lbx.distribution.manageserver.entity.order.StatOrderEntity">
+    DELETE FROM stat_order
+    WHERE
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="merchantId != null">
+      AND merchant_id = #{merchantId,jdbcType=INTEGER}
+    </if>
+    <if test="companyId != null">
+      AND company_id = #{companyId,jdbcType=INTEGER}
+    </if>
+    <if test="shopId != null">
+      AND shop_id = #{shopId,jdbcType=INTEGER}
+    </if>
+    <if test="cityCode != null">
+      AND city_code = #{cityCode,jdbcType=CHAR}
+    </if>
+    <if test="createTime != null ">
+      AND create_time = #{createTime}
+    </if>
+  </delete>
+
+  <!--插入新数据-->
+  <insert id="insert" parameterType="com.lbx.distribution.manageserver.entity.order.StatOrder">
+    insert into stat_order (channel_id, merchant_id, company_id, 
+      shop_id, city_code, order_num, 
+      create_time)
+    values (#{channelId,jdbcType=INTEGER}, #{merchantId,jdbcType=INTEGER}, #{companyId,jdbcType=INTEGER}, 
+      #{shopId,jdbcType=INTEGER}, #{cityCode,jdbcType=CHAR}, #{orderNum,jdbcType=INTEGER}, 
+      #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+
+</mapper>

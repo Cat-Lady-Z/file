@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.OrderStatusMapper">
+  <resultMap id="BaseResultMap"  type="com.lbx.distribution.manageserver.entity.order.OrderStatus">
+    <id column="order_id" property="orderId" javaType="java.lang.String" jdbcType="CHAR" />
+    <result column="distribute_status" property="distributeStatus" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="distribute_channelid" property="distributeChannelid" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="distribute_rule" property="distributeRule" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="StatOrderEntityResultMap"  type="com.lbx.distribution.manageserver.entity.order.StatOrderEntity">
+    <id column="order_id" property="orderId" javaType="java.lang.String" jdbcType="CHAR" />
+    <result column="distribute_status" property="distributeStatus" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="distribute_channelid" property="channelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="distribute_rule" property="distributeRule" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+
+    <result column="merchant_id" property="merchantId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="shop_id" property="shopId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" javaType="java.lang.Integer" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_id, distribute_status, distribute_channelid, distribute_rule, create_time
+  </sql>
+  <sql id="OS_Column_List">
+    os.order_id, os.distribute_status, os.distribute_channelid, os.distribute_rule, os.create_time
+  </sql>
+
+
+  <!--按照小时维度查询统计数据-->
+  <select id="queryOrderStat" resultMap="StatOrderEntityResultMap">
+    SELECT
+     os.distribute_channelid, od.merchant_id, od.company_id , od.shop_id , od.city_code, COUNT(os.order_id) as order_num,
+    DATE_FORMAT(od.create_time,'%Y-%m-%d %H') as create_time
+    FROM tb_order_status `os`
+    LEFT JOIN tb_order `od` ON os.order_id = od.order_id
+    WHERE  os.distribute_status = 4
+    GROUP BY  os.distribute_channelid, od.merchant_id, od.company_id, od.shop_id, od.city_code,
+    DATE_FORMAT(od.create_time,'%Y-%m-%d %H')
+  </select>
+
+  <!--多条件筛选订单id-->
+  <select id="queryByOrderId"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_status
+    WHERE
+    1=1
+    <if test="orderId != null">
+      AND order_id = #{orderId,jdbcType=CHAR}
+    </if>
+  </select>
+
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from tb_order_status
+    where order_id = #{orderId,jdbcType=CHAR}
+  </select>
+
+  <!--查订单id（多条件:distributionOrderId、channelId、startTime、endTime,status: 待接单＝1(0-未分发)，已完成＝4，已取消＝5，系统异常=1000(-1, 6)）-->
+  <select id="queryOrderIds" resultType="java.lang.String">
+    SELECT
+    tos.order_id
+    FROM tb_order_status tos
+    <if test="startTime != null">
+    LEFT JOIN tb_order toe ON tos.order_id = toe.order_id
+    </if>
+    WHERE
+    1=1
+    <if test="channelId != null ">
+      AND tos.distribute_channelid = #{channelId}
+    </if>
+    <if test="startTime != null">
+      AND  toe.order_type = 1
+    </if>
+    <if test="startTime != null">
+      AND  tos.create_time &gt;= #{startTime}
+    </if>
+    <if test="endTime != null ">
+      AND  tos.create_time &lt;= #{endTime}
+    </if>
+    <if test="status != null and status == 1000">
+      AND tos.distribute_status IN (-1, 6)
+    </if>
+    <if test="status != null and status != 1000">
+      AND tos.distribute_status = #{status}
+    </if>
+  </select>
+</mapper>

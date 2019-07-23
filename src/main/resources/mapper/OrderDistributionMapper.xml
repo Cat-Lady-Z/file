@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.OrderDistributionMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.order.OrderDistribution">
+    <id column="order_id" property="orderId" javaType="java.lang.String" jdbcType="CHAR" />
+    <result column="channel_id" property="channelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="channel_delivery_id" property="channelDeliveryId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="channel_peisong_id" property="channelPeisongId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="delivery_fee" property="deliveryFee"  javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    <result column="predict_amount" property="predictAmount" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    <result column="status_code" property="statusCode" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="status_msg" property="statusMsg" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_id, channel_id, channel_delivery_id, channel_peisong_id, delivery_fee, predict_amount, 
+    status_code, status_msg, create_time
+  </sql>
+
+  <!--多条件筛选[单个]-->
+  <select id="queryOrderDistribution"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution
+    WHERE
+    order_id = #{orderId,jdbcType=CHAR}
+    AND
+     channel_id = #{channelId,jdbcType=INTEGER}
+    <if test="status != null and status != -1000 and status != 1000">
+      AND status_code = #{status}
+    </if>
+    <if test="status != null and status == -1000">
+      AND status_code &gt;= 2
+    </if>
+    <if test="status != null and status == 1000">
+      AND status_code IN (-1, 7, 8,9, 10,1000)
+    </if>
+  </select>
+
+  <!--查询订单id（channelPeisongId、筛选status条件（待取货＝2(2,100),配送中＝3））-->
+  <select id="queryOrderIds"  resultType="java.lang.String">
+    SELECT
+    od.order_id
+    FROM tb_order_status `os`
+    LEFT JOIN tb_order_distribution od ON od.order_id = os.order_id AND od.channel_id = os.distribute_channelid
+    WHERE
+    1=1
+    <if test="status != null and status == 2">
+      AND od.status_code IN (2, 100)
+    </if>
+    <if test="status != null and status != 2">
+      AND od.status_code = #{status}
+    </if>
+    <if test="channelPeisongId != null and channelPeisongId != ''">
+      AND od.channel_peisong_id LIKE "%"#{channelPeisongId}"%"
+    </if>
+  </select>
+</mapper>

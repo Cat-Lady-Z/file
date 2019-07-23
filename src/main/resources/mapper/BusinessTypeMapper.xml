@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.BusinessTypeMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.BusinessType">
+    <id column="id" property="id" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="name" property="name" javaType="java.lang.String" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, name
+  </sql>
+
+  <!--查询所有的业务类型-->
+  <select id="selectAllBusinessType" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from business_type
+  </select>
+
+</mapper>

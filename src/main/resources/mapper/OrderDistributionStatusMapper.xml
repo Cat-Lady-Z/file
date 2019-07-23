@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.OrderDistributionStatusMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatus">
+    <id column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" javaType="java.lang.String" jdbcType="CHAR" />
+    <result column="channel_id" property="channelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="channel_delivery_id" property="channelDeliveryId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="channel_peisong_id" property="channelPeisongId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="delivery_fee" property="deliveryFee" javaType="java.math.BigDecimal" jdbcType="DECIMAL" />
+    <result column="status_code" property="statusCode" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="status_msg" property="statusMsg" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="courier_name"  property="courierName" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="courier_phone" property="courierPhone" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="cancel_reason_id" property="cancelReasonId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="cancel_reason" property="cancelReason" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="OrderDistributionStatusVoMap" type="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatusVo">
+    <id column="id" property="id" javaType="java.lang.Long" jdbcType="BIGINT" />
+    <result column="order_id" property="orderId" javaType="java.lang.String" jdbcType="CHAR" />
+    <result column="channel_peisong_id" property="channelPeisongId" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="status_code" property="statusCode" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="status_msg" property="statusMsg" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="cancel_reason_id" property="cancelReasonId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="cancel_reason" property="cancelReason" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, order_id, channel_id, channel_delivery_id, channel_peisong_id, delivery_fee,
+    status_code, status_msg, courier_name, courier_phone, cancel_reason_id, cancel_reason, create_time
+  </sql>
+
+  <!--根据订单和渠道id查询订单骑手信息-->
+  <select id="queryCourierData" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution_status
+    WHERE order_id = #{orderId,jdbcType=CHAR}
+    AND
+    channel_id = #{channelId,jdbcType=INTEGER}
+    AND
+    status_code >= 2
+  </select>
+
+  <!--根据订单和渠道id查询订单骑手信息-->
+  <select id="queryDistStatus" resultMap="BaseResultMap" >
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution_status
+    WHERE order_id = #{orderId,jdbcType=CHAR}
+    AND
+    channel_id = #{channelId,jdbcType=INTEGER}
+    AND
+    status_code = #{statusCode}
+    limit 0,1
+  </select>
+
+  <!--根据订单和渠道id查询订单状态列表-->
+  <select id="queryDistStatusList" resultMap="OrderDistributionStatusVoMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution_status
+    WHERE order_id = #{orderId,jdbcType=CHAR}
+    AND
+    channel_id = #{channelId,jdbcType=INTEGER}
+    ORDER BY create_time ASC
+  </select>
+
+  <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution_status
+    WHERE id = #{id,jdbcType=BIGINT}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    DELETE FROM tb_order_distribution_status
+    WHERE id = #{id,jdbcType=BIGINT}
+  </delete>
+  <insert id="insert" parameterType="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatus">
+    insert into tb_order_distribution_status (id, order_id, channel_id, 
+      channel_delivery_id, channel_peisong_id, predict_amount, 
+      status_code, status_msg, courier_name, 
+      courier_phone, create_time)
+    values (#{id,jdbcType=BIGINT}, #{orderId,jdbcType=CHAR}, #{channelId,jdbcType=INTEGER}, 
+      #{channelDeliveryId,jdbcType=VARCHAR}, #{channelPeisongId,jdbcType=VARCHAR}, #{predictAmount,jdbcType=DECIMAL}, 
+      #{statusCode,jdbcType=INTEGER}, #{statusMsg,jdbcType=VARCHAR}, #{courierName,jdbcType=VARCHAR}, 
+      #{courierPhone,jdbcType=VARCHAR}, #{createTime,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatus">
+    insert into tb_order_distribution_status
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        id,
+      </if>
+      <if test="orderId != null">
+        order_id,
+      </if>
+      <if test="channelId != null">
+        channel_id,
+      </if>
+      <if test="channelDeliveryId != null">
+        channel_delivery_id,
+      </if>
+      <if test="channelPeisongId != null">
+        channel_peisong_id,
+      </if>
+      <if test="predictAmount != null">
+        predict_amount,
+      </if>
+      <if test="statusCode != null">
+        status_code,
+      </if>
+      <if test="statusMsg != null">
+        status_msg,
+      </if>
+      <if test="courierName != null">
+        courier_name,
+      </if>
+      <if test="courierPhone != null">
+        courier_phone,
+      </if>
+      <if test="createTime != null">
+        create_time,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id,jdbcType=BIGINT},
+      </if>
+      <if test="orderId != null">
+        #{orderId,jdbcType=CHAR},
+      </if>
+      <if test="channelId != null">
+        #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="channelDeliveryId != null">
+        #{channelDeliveryId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPeisongId != null">
+        #{channelPeisongId,jdbcType=VARCHAR},
+      </if>
+      <if test="predictAmount != null">
+        #{predictAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="statusCode != null">
+        #{statusCode,jdbcType=INTEGER},
+      </if>
+      <if test="statusMsg != null">
+        #{statusMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="courierName != null">
+        #{courierName,jdbcType=VARCHAR},
+      </if>
+      <if test="courierPhone != null">
+        #{courierPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <update id="updateByPrimaryKeySelective" parameterType="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatus">
+    update tb_order_distribution_status
+    <set>
+      <if test="orderId != null">
+        order_id = #{orderId,jdbcType=CHAR},
+      </if>
+      <if test="channelId != null">
+        channel_id = #{channelId,jdbcType=INTEGER},
+      </if>
+      <if test="channelDeliveryId != null">
+        channel_delivery_id = #{channelDeliveryId,jdbcType=VARCHAR},
+      </if>
+      <if test="channelPeisongId != null">
+        channel_peisong_id = #{channelPeisongId,jdbcType=VARCHAR},
+      </if>
+      <if test="predictAmount != null">
+        predict_amount = #{predictAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="statusCode != null">
+        status_code = #{statusCode,jdbcType=INTEGER},
+      </if>
+      <if test="statusMsg != null">
+        status_msg = #{statusMsg,jdbcType=VARCHAR},
+      </if>
+      <if test="courierName != null">
+        courier_name = #{courierName,jdbcType=VARCHAR},
+      </if>
+      <if test="courierPhone != null">
+        courier_phone = #{courierPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="createTime != null">
+        create_time = #{createTime,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.lbx.distribution.manageserver.entity.order.OrderDistributionStatus">
+    update tb_order_distribution_status
+    set order_id = #{orderId,jdbcType=CHAR},
+      channel_id = #{channelId,jdbcType=INTEGER},
+      channel_delivery_id = #{channelDeliveryId,jdbcType=VARCHAR},
+      channel_peisong_id = #{channelPeisongId,jdbcType=VARCHAR},
+      predict_amount = #{predictAmount,jdbcType=DECIMAL},
+      status_code = #{statusCode,jdbcType=INTEGER},
+      status_msg = #{statusMsg,jdbcType=VARCHAR},
+      courier_name = #{courierName,jdbcType=VARCHAR},
+      courier_phone = #{courierPhone,jdbcType=VARCHAR},
+      create_time = #{createTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

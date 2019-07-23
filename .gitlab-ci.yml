@@ -1,0 +1,23 @@
+before_script:
+  - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+  - eval $(ssh-agent -s)
+  - ssh-add <(echo "$SSH_PRIVATE_KEY")
+  - mkdir -p ~/.ssh
+  - '[[ -f /.dockerenv ]] && echo -e "Host *\\n\\tStrictHostKeyChecking no\\n\\n" > ~/.ssh/config'
+image: maven:latest
+stages:
+  - deylop-test
+  - deylop-prod
+
+deylop-test:
+  stage: deylop-test
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - scp ./target/manage-server-1.0.0.jar "root@47.107.255.9:/home/pro"
+    - ssh root@47.107.255.9 "/home/pro/helloworld.sh restart"
+  artifacts:
+    paths:
+      - target/manage-server-1.0.0.jar
+  only:
+    - master
+

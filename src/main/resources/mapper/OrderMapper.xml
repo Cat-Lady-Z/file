@@ -1,0 +1,310 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.OrderMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.order.OrderEntity">
+    <id column="order_id" property="orderId" jdbcType="CHAR" />
+    <result column="merchant_id" property="merchantId"  jdbcType="INTEGER" />
+    <result column="company_id" property="companyId"  jdbcType="INTEGER" />
+    <result column="shop_id" property="shopId" jdbcType="INTEGER" />
+    <result column="origin_id" property="originId" jdbcType="CHAR" />
+    <result column="origin_source" property="originSource" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" jdbcType="CHAR" />
+    <result column="amount" property="amount"  jdbcType="DECIMAL" />
+    <result column="is_prepay" property="isPrepay" jdbcType="INTEGER" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+    <result column="receiver_lat" property="receiverLat" jdbcType="DECIMAL" />
+    <result column="receiver_lng" property="receiverLng" jdbcType="DECIMAL" />
+    <result column="callback_url" property="callbackUrl" jdbcType="VARCHAR" />
+    <result column="receiver_phone" property="receiverPhone" jdbcType="CHAR" />
+    <result column="receiver_tel" property="receiverTel"  jdbcType="CHAR" />
+    <result column="cargo_type" property="cargoType" jdbcType="INTEGER" />
+    <result column="cargo_weight" property="cargoWeight" jdbcType="DECIMAL" />
+    <result column="cargo_num" property="cargoNum" jdbcType="INTEGER" />
+    <result column="cargo_value" property="cargoValue" jdbcType="DECIMAL" />
+    <result column="cargo_height" property="cargoHeight" jdbcType="DECIMAL" />
+    <result column="cargo_width" property="cargoWidth" jdbcType="DECIMAL" />
+    <result column="cargo_length" property="cargoLength" jdbcType="DECIMAL" />
+    <result column="cargo_count" property="cargoCount"  jdbcType="INTEGER" />
+    <result column="cargo_name" property="cargoName" jdbcType="VARCHAR" />
+    <result column="cargo_price" property="cargoPrice"  jdbcType="DECIMAL" />
+    <result column="cargo_unit" property="cargoUnit" jdbcType="CHAR" />
+    <result column="cargo_pickup_info"  property="cargoPickupInfo" jdbcType="VARCHAR" />
+    <result column="cargo_delivery_info" property="cargoDeliveryInfo" jdbcType="VARCHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="invoice_title" property="invoiceTitle" jdbcType="VARCHAR" />
+    <result column="origin_mark" property="originMark" jdbcType="CHAR" />
+    <result column="origin_mark_no" property="originMarkNo" jdbcType="CHAR" />
+    <result column="is_use_insurance" property="isUseInsurance" jdbcType="INTEGER" />
+    <result column="is_finish_code_needed" property="isFinishCodeNeeded" jdbcType="INTEGER" />
+    <result column="delay_publish_time" property="delayPublishTime" jdbcType="INTEGER" />
+    <result column="is_direct_delivery" property="isDirectDelivery" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+    <result column="statement" property="statement" jdbcType="INTEGER" />
+    <result column="delivery_fee" property="deliveryFee"  jdbcType="DECIMAL" />
+    <result column="tips" property="tips"  jdbcType="DECIMAL" />
+    <result column="coupon_fee" property="couponFee" jdbcType="DECIMAL" />
+    <result column="insurance_fee" property="insuranceFee" jdbcType="DECIMAL" />
+    <result column="actual_fee" property="actualFee" jdbcType="DECIMAL" />
+    <result column="distance"  property="distance" jdbcType="DECIMAL" />
+    <result column="deduct_fee" property="deductFee" jdbcType="DECIMAL" />
+    <result column="coordinate_type" property="coordinateType" jdbcType="INTEGER" />
+    <result column="delivery_service_code" property="deliveryServiceCode" jdbcType="INTEGER" />
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+    <result column="is_invoiced" property="isInvoiced" jdbcType="INTEGER" />
+    <result column="order_payment_status" property="orderPaymentStatus" jdbcType="INTEGER" />
+    <result column="order_payment_method" property="orderPaymentMethod" jdbcType="INTEGER" />
+    <result column="is_agent_payment" property="isAgentPayment" jdbcType="INTEGER" />
+
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="OrderListItemMap" type="com.lbx.distribution.manageserver.entity.order.OrderListItem">
+    <id column="order_id" property="orderId" jdbcType="CHAR" />
+    <result column="origin_id" property="originId" jdbcType="CHAR" />
+    <result column="origin_source" property="originSource" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" jdbcType="CHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="delivery_fee" property="deliveryFee"  jdbcType="DECIMAL" />
+    <result column="distribute_status" property="distributeStatus" jdbcType="INTEGER" />
+
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="channel_delivery_id" property="channelDeliveryId" jdbcType="VARCHAR" />
+    <result column="courier_name" property="courierName" jdbcType="VARCHAR" />
+    <result column="courier_phone" property="courierPhone" jdbcType="VARCHAR" />
+    <result column="status_code" property="statusCode" jdbcType="INTEGER" />
+    <result column="status_msg" property="statusMsg" jdbcType="VARCHAR" />
+    <result column="origin_source_name" property="originSourceName" jdbcType="VARCHAR" />
+
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="OrderDetailMap" type="com.lbx.distribution.manageserver.entity.order.OrderDetail">
+    <id column="order_id" property="orderId" jdbcType="CHAR" />
+    <result column="merchant_id" property="merchantId"  jdbcType="INTEGER" />
+    <result column="shop_id" property="shopId" jdbcType="INTEGER" />
+    <result column="origin_id" property="originId" jdbcType="CHAR" />
+    <result column="origin_source" property="originSource" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" jdbcType="CHAR" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+    <result column="receiver_phone" property="receiverPhone" jdbcType="CHAR" />
+    <result column="receiver_tel" property="receiverTel"  jdbcType="CHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="delivery_fee" property="deliveryFee"  jdbcType="DECIMAL" />
+    <result column="distance"  property="distance" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR"/>
+    <result column="contact_phone" property="contactPhone" jdbcType="CHAR"/>
+    <result column="distribute_status" property="distributeStatus" jdbcType="INTEGER" />
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="city_code" property="cityCode" jdbcType="CHAR" />
+    <result column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="channel_delivery_id" property="channelDeliveryId" jdbcType="VARCHAR" />
+    <result column="courier_name" property="courierName" jdbcType="VARCHAR" />
+    <result column="courier_phone" property="courierPhone" jdbcType="VARCHAR" />
+
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="OrderStatMap" type="com.lbx.distribution.manageserver.entity.order.StatOrderEntity">
+    <id column="distribute_channelid" property="channelId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="merchant_id" property="merchantId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="company_id" property="companyId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="shop_id" property="shopId" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" javaType="java.lang.String" jdbcType="VARCHAR" />
+    <result column="order_num" property="orderNum" javaType="java.lang.Integer" jdbcType="INTEGER" />
+    <result column="create_time" property="createTime" javaType="java.lang.String" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <resultMap id="OrderExcelListItemMap" type="com.lbx.distribution.manageserver.entity.order.OrderExcelListItem">
+    <id column="order_id" property="orderId" jdbcType="CHAR" />
+    <result column="merchant_id" property="merchantId"  jdbcType="INTEGER" />
+    <result column="company_id" property="companyId"  jdbcType="INTEGER" />
+    <result column="shop_id" property="shopId" jdbcType="INTEGER" />
+    <result column="origin_id" property="originId" jdbcType="CHAR" />
+    <result column="origin_source" property="originSource" jdbcType="INTEGER" />
+    <result column="city_code" property="cityCode" jdbcType="CHAR" />
+    <result column="receiver_name" property="receiverName" jdbcType="VARCHAR" />
+    <result column="receiver_address" property="receiverAddress" jdbcType="VARCHAR" />
+    <result column="receiver_phone" property="receiverPhone" jdbcType="CHAR" />
+    <result column="receiver_tel" property="receiverTel"  jdbcType="CHAR" />
+    <result column="info" property="info" jdbcType="VARCHAR" />
+    <result column="delivery_fee" property="deliveryFee"  jdbcType="DECIMAL" />
+    <result column="distance"  property="distance" jdbcType="DECIMAL" />
+    <result column="create_time" property="createTime"  jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+
+    <result column="shop_name" property="shopName" jdbcType="VARCHAR" />
+    <result column="contact_phone" property="contactPhone" jdbcType="CHAR"/>
+    <result column="city_name" property="cityName" jdbcType="VARCHAR" />
+    <result column="province_name" property="provinceName" jdbcType="VARCHAR" />
+    <result column="area_name" property="areaName" jdbcType="VARCHAR" />
+    <result column="address" property="address" jdbcType="VARCHAR"/>
+
+    <result column="enterprise_name" property="enterpriseName" jdbcType="VARCHAR" />
+    <result column="company_name" property="companyName" jdbcType="VARCHAR" />
+    <result column="distribute_status" property="distributeStatus" jdbcType="INTEGER" />
+    <result column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="origin_source_name" property="originSourceName" jdbcType="VARCHAR" />
+
+    <result column="order_type" property="orderType" jdbcType="INTEGER" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    order_id, merchant_id, company_id, shop_id, origin_id, origin_source, city_code, amount, is_prepay,
+    receiver_name, receiver_address, receiver_lat, receiver_lng, callback_url, receiver_phone, 
+    receiver_tel, cargo_type, cargo_weight, cargo_num, cargo_value, cargo_height, cargo_width, 
+    cargo_length, cargo_count, cargo_name, cargo_price, cargo_unit, cargo_pickup_info, 
+    cargo_delivery_info, info, invoice_title, origin_mark, origin_mark_no, is_use_insurance, 
+    is_finish_code_needed, delay_publish_time, is_direct_delivery, create_time, update_time, 
+    status, statement, delivery_fee, tips, coupon_fee, insurance_fee, actual_fee, distance, 
+    deduct_fee, coordinate_type, delivery_service_code, order_type, is_invoiced, order_payment_status, 
+    order_payment_method, is_agent_payment,order_type
+  </sql>
+  <sql id="OrderListItem_Column_List">
+    oe.order_id, oe.origin_id, oe.origin_source, oe.city_code, oe.order_type
+  </sql>
+  <sql id="OrderExcelListItem_Column_List">
+    oe.order_id, oe.origin_id, oe.merchant_id, oe.company_id, oe.shop_id,oe.order_type,
+    oe.distance, oe.origin_source, oe.receiver_name, oe.receiver_address, oe.receiver_phone, oe.info
+  </sql>
+  <sql id="OrderDetail_Column_List">
+    oe.order_id, oe.merchant_id, oe.shop_id,oe.origin_id, oe.origin_source, oe.city_code, oe.receiver_name, oe.receiver_address,
+    oe.receiver_phone, oe.receiver_tel, oe.info, oe.distance, oe.city_code,oe.order_type
+  </sql>
+  <sql id="Order_Column_List" >
+    `order`.order_id, `order`.merchant_id, `order`.company_id, `order`.shop_id, `order`.origin_id, `order`.origin_source, `order`.city_code, `order`.amount, `order`.is_prepay,
+    `order`.receiver_name, `order`.receiver_address, `order`.receiver_lat, `order`.receiver_lng, `order`.callback_url, `order`.receiver_phone,
+    `order`.receiver_tel, `order`cargo_type, `order`.cargo_weight, `order`.cargo_num, `order`.cargo_value, `order`.cargo_height, `order`.cargo_width,
+    `order`.cargo_length, `order`.cargo_count, `order`.cargo_name, `order`.cargo_price, `order`.cargo_unit, `order`.cargo_pickup_info,
+    `order`.cargo_delivery_info, `order`.info, `order`.invoice_title, `order`.origin_mark, `order`.origin_mark_no, `order`.is_use_insurance,
+    `order`.is_finish_code_needed, `order`.delay_publish_time, `order`.is_direct_delivery, `order`.create_time, `order`.update_time,
+    `order`.status, `order`.statement, `order`.delivery_fee, `order`.tips, `order`.coupon_fee, `order`.insurance_fee, `order`.actual_fee, `order`.distance,
+    `order`.deduct_fee, `order`.coordinate_type, `order`.delivery_service_code, `order`.order_type, `order`.is_invoiced, `order`.order_payment_status,
+    `order`.order_payment_method, `order`.is_agent_payment
+  </sql>
+
+  <!--根据订单id查询订单列表（导出）-->
+  <select id="queryOrderExcelList" resultMap="OrderExcelListItemMap">
+    SELECT
+    <include  refid="OrderExcelListItem_Column_List" />, shop.shop_name, shop.province_name, shop.city_name, shop.area_name,
+    shop.address, shop.contact_phone, os.distribute_channelid as channel_id, os.distribute_status, mer.enterprise_name, com.company_name,
+    source.source_desc as origin_source_name, os.create_time, os.update_time
+    FROM tb_order `oe`
+    LEFT JOIN tb_order_status `os` ON oe.order_id = os.order_id
+    LEFT JOIN tb_shop `shop` ON oe.shop_id = shop.shop_id
+    LEFT JOIN tb_merchant mer ON shop.merchant_id = mer.merchant_id
+    LEFT JOIN tb_company com ON shop.company_id = com.company_id
+    LEFT JOIN tb_order_source source ON oe.origin_source = source.source_type AND oe.merchant_id = source.merchant_id
+    WHERE
+    1=1
+    <if test="orderIds != null ">
+      AND oe.order_id IN
+      <foreach item="orderId" index="index" collection="orderIds"
+               open="(" separator="," close=")"> #{orderId}</foreach>
+    </if>
+    <if test="orderId != null ">
+      AND oe.order_id = #{orderId}
+    </if>
+    ORDER BY oe.create_time DESC
+  </select>
+
+  <!--查询订单列表(支持多条件查询)-->
+  <select id="queryOrderList" resultMap="OrderListItemMap">
+    SELECT
+    <include  refid="OrderListItem_Column_List" />,os.create_time, os.update_time,
+    shop.shop_name, os.distribute_channelid as channel_id, os.distribute_status, source.source_desc as origin_source_name
+    FROM tb_order `oe`
+    LEFT JOIN tb_order_source source ON oe.origin_source = source.source_type  AND oe.merchant_id = source.merchant_id
+    LEFT JOIN tb_shop `shop` ON oe.shop_id = shop.shop_id
+    LEFT JOIN tb_order_status `os` ON oe.order_id = os.order_id
+    WHERE
+    1=1
+    <if test="orderIds != null ">
+      AND oe.order_id IN
+      <foreach item="orderId" index="index" collection="orderIds"
+               open="(" separator="," close=")"> #{orderId}</foreach>
+    </if>
+    <if test="orderId != null ">
+      AND oe.order_id = #{orderId}
+    </if>
+    <if test="orderType != null ">
+      AND oe.order_type = #{orderType}
+    </if>
+    <if test="originId != null ">
+      AND oe.origin_id LIKE "%"#{originId}"%"
+    </if>
+    <if test="distributionOrderId != null ">
+      AND oe.order_id LIKE "%"#{distributionOrderId}"%"
+    </if>
+    ORDER BY oe.create_time DESC
+  </select>
+
+  <!--查询订单详情-->
+  <select id="queryOrderDetailByOrderId" resultMap="OrderDetailMap">
+    SELECT
+    <include refid="OrderDetail_Column_List" />, shop.shop_name, shop.address, shop.contact_phone,
+    os.distribute_channelid as channel_id, os.distribute_status, os.create_time, os.update_time
+    FROM tb_order `oe`
+    LEFT JOIN tb_shop `shop` ON oe.shop_id = shop.shop_id
+    LEFT JOIN tb_order_status `os` ON oe.order_id = os.order_id
+    WHERE
+    <if test="orderId != null ">
+      oe.order_id= #{orderId}
+    </if>
+  </select>
+
+  <!--查询订单总数-->
+  <select id="findTotalNumber" resultType="java.lang.Integer">
+        SELECT
+            count(*)
+        FROM
+            tb_order
+    </select>
+
+  <!--查询订单id(多条件:originId、merchantId、companyId、companyIds、shopId、cityCode、sourceType、sourceMerchantId)-->
+  <select id="queryOrderIds" resultType="java.lang.String">
+    SELECT
+    order_id
+    FROM tb_order `oe`
+    LEFT JOIN tb_order_source source ON oe.origin_source = source.source_type  AND oe.merchant_id = source.merchant_id
+    WHERE
+    1=1
+    <if test="orderType != null ">
+      AND oe.order_type = #{orderType}
+    </if>
+    <if test="cityCode != null ">
+      AND oe.city_code= #{cityCode}
+    </if>
+    <if test="sourceType != null ">
+      AND source.source_type= #{sourceType}
+    </if>
+    <if test="sourceMerchantId != null ">
+      AND source.merchant_id= #{sourceMerchantId}
+    </if>
+    <if test="merchantId != null ">
+      AND oe.merchant_id = #{merchantId}
+    </if>
+    <if test="shopId != null ">
+      AND oe.shop_id= #{shopId}
+    </if>
+    <if test="companyId != null ">
+      AND oe.company_id= #{companyId}
+    </if>
+    <if test="companyIds != null ">
+      AND oe.company_id IN
+      <foreach item="companyId" index="index" collection="companyIds"
+               open="(" separator="," close=")"> #{companyId}</foreach>
+    </if>
+    <if test="originId != null and originId != ''">
+      AND oe.origin_id LIKE "%"#{originId}"%"
+    </if>
+    <if test="distributionOrderId != null and distributionOrderId != ''">
+      AND oe.order_id LIKE "%"#{distributionOrderId}"%"
+    </if>
+  </select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.lbx.distribution.manageserver.mapper.ChannelMapper">
+  <resultMap id="BaseResultMap" type="com.lbx.distribution.manageserver.entity.channel.ChannelEntity">
+    <id column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="channel_name"  property="channelName" jdbcType="VARCHAR" />
+    <result column="create_time" property="createTime" jdbcType="TIMESTAMP" />
+    <result column="update_time" property="updateTime" jdbcType="TIMESTAMP" />
+    <result column="status" property="status" jdbcType="INTEGER" />
+  </resultMap>
+  <resultMap id="MenuResultMap" type="com.lbx.distribution.manageserver.entity.channel.ChannelConfigMenu">
+    <id column="channel_id" property="channelId" jdbcType="INTEGER" />
+    <result column="channel_name"  property="channelName" jdbcType="VARCHAR" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    channel_id, channel_name, create_time, update_time, status
+  </sql>
+
+  <!--查询商戶/公司/门店 全部可用渠道列表-->
+  <select id="queryAvailableChannelList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_channel
+    where
+    status = 1
+    <if test="channelIds != null">
+      AND channel_id NOT IN
+      <foreach item="channelId" index="index" collection="channelIds"
+               open="(" separator="," close=")"> #{channelId}</foreach>
+    </if>
+  </select>
+
+  <!--查询所有可用渠道-->
+  <select id="queryAvailableChannelMenu" resultMap="MenuResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_channel
+    where
+    status = 1
+  </select>
+
+  <!--查询渠道列表-->
+  <select id="queryChannelList" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from tb_channel
+    where
+    1=1
+    <if test="channelId != null">
+       AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+    <if test="channelName != null">
+      AND channel_name LIKE "%"#{channelName,jdbcType=VARCHAR}"%"
+    </if>
+  </select>
+
+  <!--查询全部可用渠道id-->
+  <select id="queryChannelIds" resultType="java.lang.Integer">
+    select
+    channel_id
+    from tb_channel
+    where
+    status = 1
+  </select>
+
+  <!--查询渠道列表-->
+  <select id="queryChannelNameByChannelId" resultType="java.lang.String">
+    select
+    channel_name
+    from tb_channel
+    where
+    1=1
+    <if test="channelId != null">
+      AND channel_id = #{channelId,jdbcType=INTEGER}
+    </if>
+  </select>
+
+  <!--新增渠道-->
+  <insert id="addChannel" >
+    insert into tb_channel
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="channelName != null">
+        channel_name,
+      </if>
+      <if test="status != null">
+        status
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="channelName != null">
+        #{channelName,jdbcType=VARCHAR},
+      </if>
+      <if test="status != null">
+        #{status,jdbcType=INTEGER}
+      </if>
+    </trim>
+  </insert>
+
+  <!--删除渠道-->
+  <delete id="deleteChannel" parameterType="java.lang.Integer">
+    delete from tb_channel
+    where channel_id = #{channelId,jdbcType=INTEGER}
+  </delete>
+</mapper>
