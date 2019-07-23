@@ -7,14 +7,26 @@ before_script:
 image: maven:latest
 stages:
   - deylop-test
-  #- deylop-prod
+  - deylop-prod
 
 deylop-test:
   stage: deylop-test
   script:
     - mvn clean package -Dmaven.test.skip=true
     - scp ./target/manage-server-1.0.0.jar "root@47.107.255.9:/home/pro"
-    - ssh root@47.107.255.9 "/home/pro/helloworld.sh restart"
+    - ssh root@47.107.255.9 "/home/pro/starter.sh restart"
+  artifacts:
+    paths:
+      - target/manage-server-1.0.0.jar
+  only:
+    - /^release.*$/
+
+deylop-prod:
+  stage: deylop-prod
+  script:
+    - mvn clean package -Dmaven.test.skip=true
+    - scp ./target/manage-server-1.0.0.jar "root@47.107.255.9:/data/proc/manage-server"
+    - ssh root@172.16.220.204 "/data/proc/manage-server/starter.sh restart"
   artifacts:
     paths:
       - target/manage-server-1.0.0.jar
