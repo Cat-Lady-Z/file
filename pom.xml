@@ -258,6 +258,8 @@
             </activation>
             <properties>
                 <spring.profiles.active>dev</spring.profiles.active>
+                <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+                <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
             </properties>
         </profile>
         <!-- 生产环境 -->
