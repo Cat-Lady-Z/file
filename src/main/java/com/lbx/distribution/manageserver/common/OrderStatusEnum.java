@@ -36,6 +36,7 @@ public class OrderStatusEnum {
     public final static int RETURNING_CODE = 9;
     public final static int RETURN_FINISH_CODE = 10;
     public final static int SYS_EXCEPTION_CODE = 1000;
+    public final static int SYS_EXCEPTION_CODE_TBSTATUS = 6;
 
     public static String getStatusMsg(Integer status) {
         if (status == null)
@@ -85,6 +86,17 @@ public class OrderStatusEnum {
     //判断传入值是否在tb_order_status表。待接单＝1(0)，已完成＝4，已取消＝5，系统异常=1000(-1,  6)
     public static boolean isInTbOrderStatus(Integer statusCode) {
         if ( statusCode==1 || statusCode ==4 || statusCode ==5 || statusCode==1000 ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * 判断是否是异常状态
+     * desc: 分发状态(0:未分发;1:分发渠道成功;4:订单已完成;5:订单已取消;6:订单异常;-1:失败订单)
+     */
+    public static boolean isExceptionStatus(Integer distributeStatus) {
+        if ( distributeStatus==FAIL_ORDER || distributeStatus == SYS_EXCEPTION_CODE_TBSTATUS) {
             return true;
         }
         return false;

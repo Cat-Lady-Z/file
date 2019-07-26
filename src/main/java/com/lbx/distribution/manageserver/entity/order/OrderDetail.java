@@ -14,6 +14,16 @@ import java.util.List;
 public class OrderDetail {
 
     /**
+     * 异常描述
+     */
+    private String exceptionDesc;
+
+    /**
+     * 异常码
+     */
+    private Integer exceptionCode;
+
+    /**
      * 订单类型， 1: 即时单(尽快送达，限当日订单) 2: 预约单
      */
     private Integer orderType;
@@ -456,5 +466,21 @@ public class OrderDetail {
 
     public void setCancelReasonId(Integer cancelReasonId) {
         this.cancelReasonId = cancelReasonId;
+    }
+
+    public String getExceptionDesc() {
+        return exceptionDesc;
+    }
+
+    public void setExceptionDesc(String exceptionDesc) {
+        this.exceptionDesc = exceptionDesc;
+    }
+
+    public Integer getExceptionCode() {
+        return exceptionCode;
+    }
+
+    public void setExceptionCode(Integer exceptionCode) {
+        this.exceptionCode = exceptionCode;
     }
 }

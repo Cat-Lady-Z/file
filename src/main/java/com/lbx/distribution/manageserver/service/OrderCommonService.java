@@ -456,6 +456,13 @@ public class OrderCommonService {
             List<OrderDistributionStatusVo> orderDisStatusList = null;
             Integer distributeStatus = orderDetail.getDistributeStatus();
             if (distributeStatus != null) {
+                //填充异常信息
+                if (OrderStatusEnum.isExceptionStatus(distributeStatus)) {
+                    //去存异常信息的表里查异常信息
+                    
+                }
+
+                //填充配送信息
                 if ( distributeStatus > 0 && orderDetail.getChannelId()!=0 ) {
                     //填充渠道名称
                     String channelName = channelMapper.queryChannelNameByChannelId(orderDetail.getChannelId());
@@ -511,6 +518,7 @@ public class OrderCommonService {
                     orderDetail.setChannelName("-");
                 }
             } else {
+                //预约单，还没正式发单就取消的
                 orderDisStatusList = new ArrayList<>();
                 OrderExpected orderExpected = orderExpectedMapper.selectByPrimaryKey(orderDetail.getOrderId());
 
