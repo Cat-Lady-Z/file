@@ -6,6 +6,8 @@ import com.lbx.distribution.manageserver.common.ManageResultCode;
 import com.lbx.distribution.manageserver.common.OrderDistributionStatusEnum;
 import com.lbx.distribution.manageserver.common.OrderStatusEnum;
 import com.lbx.distribution.manageserver.entity.PageResult;
+import com.lbx.distribution.manageserver.entity.log.LogExceptionOrderBack;
+import com.lbx.distribution.manageserver.entity.log.LogExceptionOrderBackDetail;
 import com.lbx.distribution.manageserver.entity.order.*;
 import com.lbx.distribution.manageserver.entity.orderExpected.OrderExpected;
 import com.lbx.distribution.manageserver.entity.orderExpected.OrderExpectedListItem;
@@ -55,6 +57,8 @@ public class OrderCommonService {
     private CityMatchService cityMatchService;
     @Autowired
     private OrderExpectedMapper orderExpectedMapper;
+    @Autowired
+    private LogExceptionOrderBackMapper logExceptionOrderBackMapper;
 
     /**
      * 分页获取订单列表
@@ -459,7 +463,26 @@ public class OrderCommonService {
                 //填充异常信息
                 if (OrderStatusEnum.isExceptionStatus(distributeStatus)) {
                     //去存异常信息的表里查异常信息
-                    
+                    List<LogExceptionOrderBackDetail> logExceptionOrderBacks = logExceptionOrderBackMapper.selectByOrderId(orderId);
+                    if (logExceptionOrderBacks != null && logExceptionOrderBacks.size() != 0) {
+                        StringBuffer logException_buffer = new StringBuffer();
+                        String exceptionCode = new String();
+                        for (LogExceptionOrderBackDetail logExceptionOrderBack:logExceptionOrderBacks ) {
+                            logException_buffer.append(logExceptionOrderBack.getChannelName() + ":" + logExceptionOrderBack.getExceptionMsg() + "/ ");
+                            exceptionCode = logExceptionOrderBack.getExceptionCode();
+                        }
+                        String logException = logException_buffer.toString();
+                        orderDetail.setExceptionDesc(logException);
+                        orderDetail.setExceptionCode(exceptionCode);
+                    } else {
+                        if (distributeStatus == -1) {
+                            orderDetail.setExceptionCode(-1+"");
+                            orderDetail.setExceptionDesc("未知原因导致下单失败");
+                        } else {
+                            orderDetail.setExceptionCode(6+"");
+                            orderDetail.setExceptionDesc("未知原因导致订单异常");
+                        }
+                    }
                 }
 
                 //填充配送信息

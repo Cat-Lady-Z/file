@@ -21,7 +21,7 @@ public class OrderDetail {
     /**
      * 异常码
      */
-    private Integer exceptionCode;
+    private String exceptionCode;
 
     /**
      * 订单类型， 1: 即时单(尽快送达，限当日订单) 2: 预约单
@@ -476,11 +476,11 @@ public class OrderDetail {
         this.exceptionDesc = exceptionDesc;
     }
 
-    public Integer getExceptionCode() {
+    public String getExceptionCode() {
         return exceptionCode;
     }
 
-    public void setExceptionCode(Integer exceptionCode) {
+    public void setExceptionCode(String exceptionCode) {
         this.exceptionCode = exceptionCode;
     }
 }
