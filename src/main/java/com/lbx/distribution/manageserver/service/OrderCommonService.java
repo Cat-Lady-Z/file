@@ -811,7 +811,7 @@ public class OrderCommonService {
 
                     //2) 状态列表
                     item = this.setDistributionStatusMap(item, orderDistributeStatusMap);
-                    if (item.getDistributeStatus() == OrderStatusEnum.FAIL_ORDER) {
+                    if (distributeStatus == OrderStatusEnum.FAIL_ORDER) {
                         //发单失败的订单：手动添加配送状态map
                         Map<Integer, OrderDistributionStatusVo> statusVoMap = new HashMap<>();
                         OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
@@ -822,6 +822,19 @@ public class OrderCommonService {
                         statusVo_fail.setStatusCode(OrderStatusEnum.SYS_EXCEPTION_CODE);
                         statusVo_fail.setCreateTime(item.getUpdateTime());
                         statusVoMap.put(OrderStatusEnum.SYS_EXCEPTION_CODE, statusVo_fail);
+                        item.setOrderDistributionStatusVoMap(statusVoMap);
+                    }
+                    if (distributeStatus == OrderStatusEnum.CANCEL_CODE && channelId == 0) {
+                        //取消订单-未分发成功：手动添加配送状态map
+                        Map<Integer, OrderDistributionStatusVo> statusVoMap = new HashMap<>();
+                        OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
+                        statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
+                        statusVo_order.setCreateTime(item.getCreateTime());
+                        statusVoMap.put(OrderStatusEnum.WAIT_ORDER_CODE, statusVo_order);
+                        OrderDistributionStatusVo statusVo_cancel = new OrderDistributionStatusVo();
+                        statusVo_cancel.setStatusCode(OrderStatusEnum.CANCEL_CODE);
+                        statusVo_cancel.setCreateTime(item.getUpdateTime());
+                        statusVoMap.put(OrderStatusEnum.CANCEL_CODE, statusVo_cancel);
                         item.setOrderDistributionStatusVoMap(statusVoMap);
                     }
 
