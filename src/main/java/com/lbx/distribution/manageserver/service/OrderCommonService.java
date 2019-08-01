@@ -972,25 +972,25 @@ public class OrderCommonService {
 
         // tb_order_distribution_status订单状态: (待接单＝1 骑士到店=100 待取货＝2 配送中＝3 已完成＝4 已取消＝5
         //已过期＝7 指派单=8 妥投异常之物品返回中=9 妥投异常之物品返回完成=10 系统故障订单发布失败=1000 可参考文末的状态说明）
-        //导出状态: 门店发单＝1(1，100)，骑手接单=2（2），骑手取货=(3), 完成=(4), 已取消=(5), 异常=(7~10, 1100, 1000)
+        //导出状态: 门店发单＝1(1)，骑手接单=2（2，100），骑手取货=(3), 完成=(4), 已取消=(5), 异常=(7~10, 1100, 1000)
         //导出签名：statusCode
         //1)门店发货
-        OrderDistributionStatusVo waitOrder_statusVo1 = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_ORDER_CODE);
-        OrderDistributionStatusVo waitOrder_statusVo2 = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.Courier_Reach_CODE);
-        if (waitOrder_statusVo2 !=null) {
-            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, waitOrder_statusVo2);
-        }
-        if (waitOrder_statusVo1 !=null) {
-            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, waitOrder_statusVo1);
-        }
-        if (waitOrder_statusVo1 == null && waitOrder_statusVo2 == null) {
+        OrderDistributionStatusVo waitOrder_statusVo = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_ORDER_CODE);
+        if (waitOrder_statusVo !=null) {
+            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, waitOrder_statusVo);
+        } else {
             OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
             statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
             statusVo_order.setCreateTime(orderExcelListItem.getCreateTime());
             resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, statusVo_order);
         }
+
         //2) 骑手接单
         OrderDistributionStatusVo waitDelivery_statusVo = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_DELIVERY_CODE);
+        OrderDistributionStatusVo waitDelivery_statusVo2 = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.Courier_Reach_CODE);
+        if (waitDelivery_statusVo2 !=null) {
+            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE, waitDelivery_statusVo2);
+        }
         if (waitDelivery_statusVo !=null) {
             resultStatusMap.put(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE, waitDelivery_statusVo);
         }

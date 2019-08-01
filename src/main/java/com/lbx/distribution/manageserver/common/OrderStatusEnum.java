@@ -48,10 +48,9 @@ public class OrderStatusEnum {
             case -1: msg = SYS_EXCEPTION_MSG;
                 break;
             case 0: ;
-            case 1: ;
-            case 2: msg = WAIT_ORDER_MSG;
+            case 1: msg = WAIT_ORDER_MSG;
                 break;
-
+            case 2: ;
             case 100:msg = WAIT_DELIVERY_MSG;
                 break;
             case 3: msg = DISTRIBUTION_MSG;
