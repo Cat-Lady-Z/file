@@ -188,31 +188,6 @@
     `order`.order_payment_method, `order`.is_agent_payment
   </sql>
 
-  <!--根据订单id查询订单列表（导出）-->
-  <select id="queryOrderExcelList" resultMap="OrderExcelListItemMap">
-    SELECT
-    <include  refid="OrderExcelListItem_Column_List" />, shop.shop_name, shop.province_name, shop.city_name, shop.area_name,
-    shop.address, shop.contact_phone, os.distribute_channelid as channel_id, os.distribute_status, mer.enterprise_name, com.company_name,
-    source.source_desc as origin_source_name, os.create_time, os.update_time
-    FROM tb_order `oe`
-    LEFT JOIN tb_order_status `os` ON oe.order_id = os.order_id
-    LEFT JOIN tb_shop `shop` ON oe.shop_id = shop.shop_id
-    LEFT JOIN tb_merchant mer ON shop.merchant_id = mer.merchant_id
-    LEFT JOIN tb_company com ON shop.company_id = com.company_id
-    LEFT JOIN tb_order_source source ON oe.origin_source = source.source_type AND oe.merchant_id = source.merchant_id
-    WHERE
-    1=1
-    <if test="orderIds != null ">
-      AND oe.order_id IN
-      <foreach item="orderId" index="index" collection="orderIds"
-               open="(" separator="," close=")"> #{orderId}</foreach>
-    </if>
-    <if test="orderId != null ">
-      AND oe.order_id = #{orderId}
-    </if>
-    ORDER BY oe.create_time DESC
-  </select>
-
   <!--查询订单列表(支持多条件查询)-->
   <select id="queryOrderList" resultMap="OrderListItemMap">
     SELECT
@@ -306,5 +281,30 @@
     <if test="distributionOrderId != null and distributionOrderId != ''">
       AND oe.order_id LIKE "%"#{distributionOrderId}"%"
     </if>
+  </select>
+
+  <!--根据订单id查询订单列表（导出）-->
+  <select id="queryOrderExcelList" resultMap="OrderExcelListItemMap">
+    SELECT
+    <include  refid="OrderExcelListItem_Column_List" />, shop.shop_name, shop.province_name, shop.city_name, shop.area_name,
+    shop.address, shop.contact_phone, os.distribute_channelid as channel_id, os.distribute_status, mer.enterprise_name, com.company_name,
+    source.source_desc as origin_source_name, os.create_time, os.update_time
+    FROM tb_order `oe`
+    LEFT JOIN tb_order_status `os` ON oe.order_id = os.order_id
+    LEFT JOIN tb_shop `shop` ON oe.shop_id = shop.shop_id
+    LEFT JOIN tb_merchant mer ON shop.merchant_id = mer.merchant_id
+    LEFT JOIN tb_company com ON shop.company_id = com.company_id
+    LEFT JOIN tb_order_source source ON oe.origin_source = source.source_type AND oe.merchant_id = source.merchant_id
+    WHERE
+    1=1
+    <if test="orderIds != null ">
+      AND oe.order_id IN
+      <foreach item="orderId" index="index" collection="orderIds"
+               open="(" separator="," close=")"> #{orderId}</foreach>
+    </if>
+    <if test="orderId != null ">
+      AND oe.order_id = #{orderId}
+    </if>
+    ORDER BY oe.create_time DESC
   </select>
 </mapper>

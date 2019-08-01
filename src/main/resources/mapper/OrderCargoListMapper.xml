@@ -17,6 +17,7 @@
     <result column="item_single_price" property="itemSinglePrice" jdbcType="DECIMAL" />
   </resultMap>
   <resultMap id="OrderExcelCargoItemMap" type="com.lbx.distribution.manageserver.entity.order.OrderExcelCargoItem">
+    <id column="order_id" property="orderId" jdbcType="CHAR" />
     <result column="item_name" property="itemName" jdbcType="VARCHAR" />
     <result column="item_quantity" property="itemQuantity" jdbcType="INTEGER" />
     <result column="item_actual_price" property="itemActualPrice" jdbcType="DECIMAL" />
@@ -27,7 +28,7 @@
     item_remark, is_need_package, is_agent_purchase, agent_purchase_price
   </sql>
   <sql id="OrderExcelCargoItem_Column_List">
-    item_name, item_quantity, item_actual_price
+    order_id, item_name, item_quantity, item_actual_price
   </sql>
 
   <select id="selectByOrderId" resultMap="BaseResultMap">
@@ -39,8 +40,17 @@
 
   <select id="selectOrderExcelCargoItemByOrderId" resultMap="OrderExcelCargoItemMap">
     select
-    <include refid="OrderExcelCargoItem_Column_List" />, (item_actual_price/item_quantity) as item_single_price
+    <include refid="OrderExcelCargoItem_Column_List" />
     from tb_order_cargo_list
-    where order_id = #{orderId,jdbcType=CHAR}
+    where
+    1=1
+    <if test="orderId != null ">
+      AND  order_id = #{orderId}
+    </if>
+    <if test="orderIds != null ">
+      AND order_id IN
+      <foreach item="orderId" index="index" collection="orderIds"
+               open="(" separator="," close=")"> #{orderId}</foreach>
+    </if>
   </select>
 </mapper>

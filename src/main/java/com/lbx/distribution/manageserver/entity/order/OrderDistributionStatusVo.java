@@ -36,6 +36,8 @@ public class OrderDistributionStatusVo {
      */
     private Integer statusCode;
 
+    private Integer channelId;
+
     /**
      * 状态描述
      */
@@ -115,5 +117,13 @@ public class OrderDistributionStatusVo {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+
+    public Integer getChannelId() {
+        return channelId;
+    }
+
+    public void setChannelId(Integer channelId) {
+        this.channelId = channelId;
     }
 }

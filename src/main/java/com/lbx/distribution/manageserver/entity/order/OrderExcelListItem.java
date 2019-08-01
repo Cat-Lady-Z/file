@@ -6,6 +6,7 @@ import org.springframework.format.annotation.DateTimeFormat;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * @ClassName: 订单导出表格单体
@@ -211,6 +212,8 @@ public class OrderExcelListItem {
 
     //订单明细 - 货物列表
     List<OrderExcelCargoItem> orderCargoItems;
+
+    Map<Integer, OrderDistributionStatusVo> orderDistributionStatusVoMap;
 
     /**
      * 分发状态(0:未分发;1:分发渠道成功;2:订单已完成;3:订单已取消,-1:失败订单)
@@ -552,5 +555,13 @@ public class OrderExcelListItem {
 
     public void setAddTimePrice(BigDecimal addTimePrice) {
         this.addTimePrice = addTimePrice;
+    }
+
+    public Map<Integer, OrderDistributionStatusVo> getOrderDistributionStatusVoMap() {
+        return orderDistributionStatusVoMap;
+    }
+
+    public void setOrderDistributionStatusVoMap(Map<Integer, OrderDistributionStatusVo> orderDistributionStatusVoMap) {
+        this.orderDistributionStatusVoMap = orderDistributionStatusVoMap;
     }
 }

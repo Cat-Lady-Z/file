@@ -49,9 +49,10 @@ public class OrderStatusEnum {
                 break;
             case 0: msg = PLACED_ORDER_MSG;
                 break;
-            case 1: msg = WAIT_ORDER_MSG;
+            case 1: ;
+            case 2: msg = WAIT_ORDER_MSG;
                 break;
-            case 2: ;
+
             case 100:msg = WAIT_DELIVERY_MSG;
                 break;
             case 3: msg = DISTRIBUTION_MSG;

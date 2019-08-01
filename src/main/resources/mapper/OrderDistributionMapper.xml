@@ -55,4 +55,21 @@
       AND od.channel_peisong_id LIKE "%"#{channelPeisongId}"%"
     </if>
   </select>
+
+  <!--多条件筛选[列表]-->
+  <select id="queryOrderDistributionList"  resultMap="BaseResultMap">
+    SELECT
+    <include refid="Base_Column_List" />
+    FROM tb_order_distribution
+    WHERE
+    1=1
+    <if test="orderId != null ">
+      AND order_id = #{orderId,jdbcType=CHAR}
+    </if>
+    <if test="orderIds != null ">
+      AND order_id IN
+      <foreach item="orderId" index="index" collection="orderIds"
+               open="(" separator="," close=")"> #{orderId}</foreach>
+    </if>
+  </select>
 </mapper>
