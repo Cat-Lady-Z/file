@@ -22,10 +22,10 @@ public class OrderExcelTitle {
 
     public static final String titleKeyString = "orderId,originId,channelPeisongId,orderTypeName,enterpriseName,companyName,shopName,createTime,channelName,statusMsg,predict_price,distance,originSourceName,provinceName,cityName,areaName,address,contactPhone,receiverName,receiverAddress,receiverPhone,courierName,courierPhone,itemName,itemPrice,itemQuantity,money,info";
 
-    public static List<String> getTitleList(){
+   /* public static List<String> getTitleList(){
         List<String> titleList = Arrays.asList(titleString.split(","));
         return titleList;
-    }
+    }*/
 
     public static List<String> getTitleKey(){
         List<String> titleKey = Arrays.asList(titleKeyString.split(","));
