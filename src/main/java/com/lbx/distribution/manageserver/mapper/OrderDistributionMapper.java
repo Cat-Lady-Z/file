@@ -23,4 +23,11 @@ public interface OrderDistributionMapper {
      * @return
      */
     OrderDistribution queryOrderDistribution(Map<String, Object> map);
+
+    /**
+     *
+     * @param orderIdsParams
+     * @return
+     */
+    List<OrderDistribution> queryOrderDistributionList(Map<String, Object> orderIdsParams);
 }

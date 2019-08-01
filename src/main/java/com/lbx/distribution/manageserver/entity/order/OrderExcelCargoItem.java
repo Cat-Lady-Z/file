@@ -7,6 +7,8 @@ import java.math.BigDecimal;
  */
 public class OrderExcelCargoItem {
 
+    private String orderId;
+
     /**
      * 物品名称
      */
@@ -26,6 +28,14 @@ public class OrderExcelCargoItem {
      * 物品单价
      */
     private BigDecimal itemSinglePrice;
+
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
 
     public String getItemName() {
         return itemName;

@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 订单货物mapper
@@ -21,8 +22,6 @@ public interface OrderCargoListMapper {
 
     /**
      *
-     * @param orderId
-     * @return
      */
-    List<OrderExcelCargoItem> selectOrderExcelCargoItemByOrderId(@Param("orderId")String orderId);
+    List<OrderExcelCargoItem> selectOrderExcelCargoItemByOrderId(Map<String, Object> params);
 }

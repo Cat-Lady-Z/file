@@ -28,6 +28,38 @@
             <fileNamePattern>${LOG_PATH}/manageserver.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
     </appender>
+    <!-- This is the kafkaAppender -->
+    <appender name="kafkaAppender" class="com.github.danielwegener.logback.kafka.KafkaAppender">
+        <encoder charset="UTF-8" class="net.logstash.logback.encoder.LogstashEncoder" >
+            <customFields>{"appName":"manage-server"}</customFields>
+            <includeMdc>true</includeMdc>
+            <includeContext>true</includeContext>
+            <includeCallerData>true</includeCallerData>
+            <fieldNames class="net.logstash.logback.fieldnames.ShortenedFieldNames"/>
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <rootCauseFirst>true</rootCauseFirst>
+            </throwableConverter>
+        </encoder>
+        <!--lbx-elk-dev-logs lbx-elk-test-logs lbx-elk-prod-logs -->
+        <topic>lbx-elk-dev-logs</topic>
+        <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.HostNameKeyingStrategy" />
+        <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
+        <producerConfig>bootstrap.servers=47.110.230.208:9092</producerConfig>
+        <!-- don't wait for a broker to ack the reception of a batch.  -->
+        <producerConfig>acks=0</producerConfig>
+        <!-- wait up to 1000ms and collect log messages before sending them as a batch -->
+        <producerConfig>linger.ms=1000</producerConfig>
+        <!-- even if the producer buffer runs full, do not block the application but start to drop messages -->
+        <!--<producerConfig>max.block.ms=0</producerConfig>-->
+        <producerConfig>block.on.buffer.full=false</producerConfig>
+        <!-- kafka连接失败后，使用下面配置进行日志输出 -->
+        <appender-ref ref="CONSOLE" />
+    </appender>
+
+    <appender name="ASYNC" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="kafkaAppender" />
+    </appender>
 
     <logger name="callBackLogger" level="INFO" additivity="true">
         <appender-ref ref="callBackAppender"/>
@@ -35,5 +67,6 @@
 
     <root level="INFO">
         <appender-ref ref="CONSOLE" />
+        <appender-ref ref="ASYNC" />
     </root>
 </configuration>

@@ -28,7 +28,7 @@ public class DataExportController {
 
     @GetMapping("/exportOrder")
     public void exportOrder(HttpServletRequest httpServletRequest, HttpServletResponse response){
-       dataExportService.exportOrder(httpServletRequest, response );
+        dataExportService.exportOrder(httpServletRequest, response );
     }
 
     @GetMapping("/exportShop")

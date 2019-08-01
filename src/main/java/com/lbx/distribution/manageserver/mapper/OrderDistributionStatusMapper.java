@@ -12,18 +12,6 @@ import java.util.Map;
  */
 @Mapper
 public interface OrderDistributionStatusMapper {
-    int deleteByPrimaryKey(Long id);
-
-    int insert(OrderDistributionStatus record);
-
-    int insertSelective(OrderDistributionStatus record);
-
-    OrderDistributionStatus selectByPrimaryKey(Long id);
-
-    int updateByPrimaryKeySelective(OrderDistributionStatus record);
-
-    int updateByPrimaryKey(OrderDistributionStatus record);
-
     /**
      * 根据订单id查询订单实时配送状态
      * @param request

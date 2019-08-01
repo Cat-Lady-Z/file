@@ -71,6 +71,43 @@ public class OrderDistributionStatusEnum {
         return msg;
     }
 
+    public static Integer getMapStatusCode(Integer statusCode) {
+        if (statusCode == null)
+            return null;
+
+        Integer mapStatusCode = null;
+
+       // tb_order_distribution_status订单状态: (待接单＝1 骑士到店=100 待取货＝2 配送中＝3 已完成＝4 已取消＝5
+        //已过期＝7 指派单=8 妥投异常之物品返回中=9 妥投异常之物品返回完成=10 系统故障订单发布失败=1000 可参考文末的状态说明）
+        //tb_order_status订单状态: 待接单＝1(0-未分发)，已完成＝4，已取消＝5，系统异常=1000; 待取货＝2(2,100),配送中＝3
+        switch (statusCode){
+            case PLACED_ORDER_CODE: ;
+            case WAIT_ORDER_CODE: mapStatusCode = WAIT_ORDER_CODE;
+                break;
+            case Courier_Reach_CODE:;
+            case WAIT_DELIVERY_CODE: mapStatusCode = WAIT_DELIVERY_CODE;
+                break;
+            case DISTRIBUTION_CODE: mapStatusCode = DISTRIBUTION_CODE;
+                break;
+            case FINISH_CODE: mapStatusCode = FINISH_CODE;
+                break;
+            case CANCEL_CODE: mapStatusCode = CANCEL_CODE;
+                break;
+            case FAIL_ORDER:;
+            case OVERDUE_CODE: ;
+            case ASSIGN_ORDER_CODE: ;
+            case RETURNING_CODE: ;
+            case RETURN_FINISH_CODE: ;
+            case SYS_EXCEPTION_CODE: mapStatusCode = SYS_EXCEPTION_CODE;
+                break;
+            default:
+                mapStatusCode = statusCode;
+                break;
+        }
+
+        return mapStatusCode;
+    }
+
     //门店发单=0 门店发单＝1 骑手接单＝2 骑手取货＝3 骑手送达＝4
     public static Boolean isAbnormalStatus(Integer statusCode) {
         if ( statusCode == PLACED_ORDER_CODE || statusCode == WAIT_ORDER_CODE || statusCode==WAIT_DELIVERY_CODE
