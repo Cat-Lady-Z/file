@@ -983,6 +983,12 @@ public class OrderCommonService {
         if (waitOrder_statusVo1 !=null) {
             resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, waitOrder_statusVo1);
         }
+        if (waitOrder_statusVo1 == null && waitOrder_statusVo2 == null) {
+            OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
+            statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
+            statusVo_order.setCreateTime(orderExcelListItem.getCreateTime());
+            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, statusVo_order);
+        }
         //2) 骑手接单
         OrderDistributionStatusVo waitDelivery_statusVo = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_DELIVERY_CODE);
         if (waitDelivery_statusVo !=null) {
