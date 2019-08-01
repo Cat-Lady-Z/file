@@ -37,6 +37,10 @@ spring:
     #configuration:
 #   log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 #配置mybatis打印sql
+#logging:
+ #   level:
+  #     com.lbx.distribution.manageserver.mapper: debug
 logging:
-    level:
-       com.lbx.distribution.manageserver.mapper: debug
+   # level:
+    #     com.lbx.distribution.manageserver.mapper: debug
+    config: classpath:logback-spring-prod.xml
