@@ -811,6 +811,19 @@ public class OrderCommonService {
 
                     //2) 状态列表
                     item = this.setDistributionStatusMap(item, orderDistributeStatusMap);
+                    if (item.getDistributeStatus() == OrderStatusEnum.FAIL_ORDER) {
+                        //发单失败的订单：手动添加配送状态map
+                        Map<Integer, OrderDistributionStatusVo> statusVoMap = new HashMap<>();
+                        OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
+                        statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
+                        statusVo_order.setCreateTime(item.getCreateTime());
+                        statusVoMap.put(OrderStatusEnum.WAIT_ORDER_CODE, statusVo_order);
+                        OrderDistributionStatusVo statusVo_fail = new OrderDistributionStatusVo();
+                        statusVo_fail.setStatusCode(OrderStatusEnum.SYS_EXCEPTION_CODE);
+                        statusVo_fail.setCreateTime(item.getUpdateTime());
+                        statusVoMap.put(OrderStatusEnum.SYS_EXCEPTION_CODE, statusVo_fail);
+                        item.setOrderDistributionStatusVoMap(statusVoMap);
+                    }
 
                     //渠道名称
                     ChannelEntity channelEntity = channelMap.get(channelId);
@@ -874,6 +887,7 @@ public class OrderCommonService {
                     statusVo_cancel.setStatusCode(5);
                     statusVo_cancel.setCreateTime(orderExpected.getUpdateTime());
                     statusVoMap.put(5, statusVo_cancel);
+                    item.setOrderDistributionStatusVoMap(statusVoMap);
                 }
             }
 
@@ -939,6 +953,7 @@ public class OrderCommonService {
         Map<Integer, OrderDistributionStatusVo> resultStatusMap = new HashMap<>();
         String orderId = orderExcelListItem.getOrderId();
         Integer channelId = orderExcelListItem.getChannelId();
+
         //唯一性签名：OrderId+channelId+statusCode
         //订单状态列表固定导出状态：门店发单	骑手接单	骑手取货	完成	已取消	异常
 

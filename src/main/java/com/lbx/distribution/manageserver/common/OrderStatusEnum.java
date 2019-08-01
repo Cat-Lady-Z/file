@@ -47,8 +47,7 @@ public class OrderStatusEnum {
         switch (status){
             case -1: msg = SYS_EXCEPTION_MSG;
                 break;
-            case 0: msg = PLACED_ORDER_MSG;
-                break;
+            case 0: ;
             case 1: ;
             case 2: msg = WAIT_ORDER_MSG;
                 break;
