@@ -329,6 +329,8 @@ public class OrderCommonService {
             return null;
         }
 
+        Map<Integer, ChannelEntity> channelMap = this.getChannelMap();
+
         for (OrderListItem item:orderList ) {
             Integer channelId = item.getChannelId();
             String orderId = item.getOrderId();
@@ -338,7 +340,6 @@ public class OrderCommonService {
                 //待完善
                Map<String, Object> result =  this.getDistributeData(channelId, orderId, distributeStatus, distributionMap);
                 Object channelPeisongIdObject = result.get("channelPeisongId");
-                Object channelNameObject = result.get("channelName");
                 Object statusCodeObject = result.get("statusCode");
                 if (statusCodeObject != null) {
                     //订单配送状态
@@ -354,9 +355,11 @@ public class OrderCommonService {
                 } else {
                     item.setChannelPeisongId("-");
                 }
-                if (channelNameObject != null) {
-                    String channelName = (String) channelNameObject;
-                    //配送渠道
+
+                //渠道名称
+                ChannelEntity channelEntity = channelMap.get(channelId);
+                if (channelEntity != null) {
+                    String channelName = channelEntity.getChannelName();
                     item.setChannelName(channelName);
                 } else {
                     item.setChannelName("-");
