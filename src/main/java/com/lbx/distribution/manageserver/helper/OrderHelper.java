@@ -547,15 +547,21 @@ public class OrderHelper {
         } else {
             //不在正常流程，就返回全部的状态
             Integer index = statusMap.get(OrderDistributionStatusEnum.WAIT_ORDER_CODE);
-            OrderDistributionStatusVo statusVo_place = null;
-            statusVo_place = tempList.get(index);
-            if (statusVo_place ==null) {
-                statusVo_place= new OrderDistributionStatusVo();
+            OrderDistributionStatusVo statusVo_place = new OrderDistributionStatusVo();
+            if (index == null) {
                 statusVo_place.setStatusMsg("门店发单");
-                statusVo_place.setCreateTime(orderDetail.getCreateTime());
                 //生成唯一的订单配送状态id
                 Long id = this.getId(ids);
                 statusVo_place.setId(id);
+            } else {
+                statusVo_place = tempList.get(index);
+                if (statusVo_place ==null) {
+                    statusVo_place = new OrderDistributionStatusVo();
+                    statusVo_place.setStatusMsg("门店发单");
+                    //生成唯一的订单配送状态id
+                    Long id = this.getId(ids);
+                    statusVo_place.setId(id);
+                }
             }
             statusVo_place.setCreateTime(orderDetail.getCreateTime());
 
