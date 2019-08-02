@@ -456,7 +456,7 @@ public class OrderHelper {
         List<OrderDistributionStatusVo> resultList = new ArrayList<>();
 
         List<Long> ids = new ArrayList<>();
-        Map<Integer, Integer> statusList = new HashMap<>(); //记录状态码和状态的index
+        Map<Integer, Integer> statusMap = new HashMap<>(); //记录状态码和状态的index
         Integer activeStatusId = 0;
         Integer activeStatus = 0;
         //判断订单是否在正常流程（门店发单-> 骑手接单 -> 骑手取货 -> 骑手送达 ）
@@ -466,9 +466,10 @@ public class OrderHelper {
                 OrderDistributionStatusVo odv = tempList.get(i);
                 //记录订单配送状态id
                 ids.add(odv.getId());
-
                 Integer statusCode = odv.getStatusCode();
-                statusList.put(statusCode, i);
+                if (!statusMap.containsKey(statusCode)){
+                    statusMap.put(statusCode, i);
+                }
                 Boolean abnormalStatus = OrderDistributionStatusEnum.isAbnormalStatus(statusCode);
                 if ( abnormalStatus ) {
                     flag = false;
@@ -479,34 +480,30 @@ public class OrderHelper {
 
         if ( flag && tempList.size() != 4 ) {
             //resultList.addAll(tempList);
-
             //在正常流程就返回固定的4个元素
             // 0. 门店发单-> 1. 骑手接单 -> 2.骑手取货 -> 3.骑手送达
             for (int i = 0; i <= 3 ; i++) {
                 OrderDistributionStatusVo orderDistributionStatusVo = new OrderDistributionStatusVo();
-
                 if ( i == 0 ) {
                     //配送状态有可能跳过一些状态，要做区分
-                    if ( statusList.containsKey(OrderDistributionStatusEnum.WAIT_ORDER_CODE)) {
-                        Integer index = statusList.get(OrderDistributionStatusEnum.WAIT_ORDER_CODE);
+                    if ( statusMap.containsKey(OrderDistributionStatusEnum.WAIT_ORDER_CODE)) {
+                        Integer index = statusMap.get(OrderDistributionStatusEnum.WAIT_ORDER_CODE);
                         orderDistributionStatusVo = tempList.get(index);
+                        orderDistributionStatusVo.setCreateTime(orderDetail.getCreateTime());
                         activeStatusId = 0;
                         activeStatus = orderDistributionStatusVo.getStatusCode();
                     } else {
                         orderDistributionStatusVo.setStatusMsg("门店发单");
                         orderDistributionStatusVo.setCreateTime(orderDetail.getCreateTime());
-
                         //生成唯一的订单配送状态id
                         Long id = this.getId(ids);
-
                         orderDistributionStatusVo.setId(id);
                     }
                     resultList.add(orderDistributionStatusVo);
                 }
-
                 if ( i == 1 ) {
-                    if ( statusList.containsKey(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE)) {
-                        Integer index = statusList.get(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE);
+                    if ( statusMap.containsKey(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE)) {
+                        Integer index = statusMap.get(OrderDistributionStatusEnum.WAIT_DELIVERY_CODE);
                         orderDistributionStatusVo = tempList.get(index);
                         activeStatusId = 1;
                         activeStatus = orderDistributionStatusVo.getStatusCode();
@@ -514,15 +511,13 @@ public class OrderHelper {
                         orderDistributionStatusVo.setStatusMsg("骑手接单");
                         //生成唯一的订单配送状态id
                         Long id = this.getId(ids);
-
                         orderDistributionStatusVo.setId(id);
                     }
                     resultList.add(orderDistributionStatusVo);
                 }
-
                 if (i == 2 ) {
-                    if ( statusList.containsKey(OrderDistributionStatusEnum.DISTRIBUTION_CODE)) {
-                        Integer index = statusList.get(OrderDistributionStatusEnum.DISTRIBUTION_CODE);
+                    if ( statusMap.containsKey(OrderDistributionStatusEnum.DISTRIBUTION_CODE)) {
+                        Integer index = statusMap.get(OrderDistributionStatusEnum.DISTRIBUTION_CODE);
                         orderDistributionStatusVo = tempList.get(index);
                         activeStatusId = 2;
                         activeStatus = orderDistributionStatusVo.getStatusCode();
@@ -534,10 +529,9 @@ public class OrderHelper {
                     }
                     resultList.add(orderDistributionStatusVo);
                 }
-
                 if (i == 3 ) {
-                    if ( statusList.containsKey(OrderDistributionStatusEnum.FINISH_CODE)) {
-                        int index = statusList.get(OrderDistributionStatusEnum.FINISH_CODE);
+                    if ( statusMap.containsKey(OrderDistributionStatusEnum.FINISH_CODE)) {
+                        int index = statusMap.get(OrderDistributionStatusEnum.FINISH_CODE);
                         orderDistributionStatusVo = tempList.get(index);
                         activeStatusId = 3;
                         activeStatus = orderDistributionStatusVo.getStatusCode();
@@ -547,19 +541,34 @@ public class OrderHelper {
                         Long id = this.getId(ids);
                         orderDistributionStatusVo.setId(id);
                     }
-
                     resultList.add(orderDistributionStatusVo);
                 }
-
             }
-
         } else {
             //不在正常流程，就返回全部的状态
+            Integer index = statusMap.get(OrderDistributionStatusEnum.WAIT_ORDER_CODE);
+            OrderDistributionStatusVo statusVo_place = new OrderDistributionStatusVo();
+            if (index == null) {
+                statusVo_place.setStatusMsg("门店发单");
+                //生成唯一的订单配送状态id
+                Long id = this.getId(ids);
+                statusVo_place.setId(id);
+            } else {
+                statusVo_place = tempList.get(index);
+                if (statusVo_place ==null) {
+                    statusVo_place = new OrderDistributionStatusVo();
+                    statusVo_place.setStatusMsg("门店发单");
+                    //生成唯一的订单配送状态id
+                    Long id = this.getId(ids);
+                    statusVo_place.setId(id);
+                }
+            }
+            statusVo_place.setCreateTime(orderDetail.getCreateTime());
+
             resultList.addAll(tempList);
             activeStatusId = tempList.size()-1;
             activeStatus = tempList.get(activeStatusId).getStatusCode();
         }
-
         if ( resultList != null ) {
             orderDetail.setActiveStatusId( activeStatusId );
             orderDetail.setActiveStatus(activeStatus);

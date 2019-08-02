@@ -28,7 +28,6 @@ import java.util.*;
 @Service
 public class OrderCommonService {
     private static Logger logger = LoggerFactory.getLogger(OrderCommonService.class);
-
     @Autowired
     OrderHelper orderHelper;
     @Autowired
@@ -71,14 +70,11 @@ public class OrderCommonService {
 
         List<OrderListItem> orderList = null;
         PageResult pageResult = new PageResult();
-
         //判断是否需要分页
         Object isPage = request.get("isPage");
-
         if (isPage == null) {
             throw new ManageException(ManageResultCode.DATA_REQUEST_ERROR, "没有isPage!");
         }
-
         //1、先确定满足条件的订单id
         Map<String, Object> params = orderHelper.getOrderIdsParams(request);
         if ( params.get("orderIds") == null && params.get("orderId") == null){
@@ -98,24 +94,19 @@ public class OrderCommonService {
         if (judgePage == 1 ){
             Integer pageSize = manageCommonService.getPageSize( request );
             Integer pageNum = manageCommonService.getPageNum( request );
-
             if ( pageSize == null || pageNum == null ) {
                 logger.warn(String.format("没有pageSize或pageNum! pageSize: %s, pageNum: %s ;", pageSize, pageNum ));
                 throw new ManageException(ManageResultCode.DATA_REQUEST_ERROR, "没有pageSize或pageNum!");
             }
-
             //分页处理
             PageHelper.startPage( pageNum, pageSize );
-
             orderList = this.queryOrderList( params );
-
             //取记录总条数
             PageInfo<OrderListItem> pageInfo = new PageInfo<>( orderList );
             pageResult.setTotal( pageInfo.getTotal() );
             pageResult.setPageNum( pageInfo.getPageNum() );
         } else {
             orderList = this.queryOrderList( params );
-
             if (orderList != null){
                 pageResult.setTotal( orderList.size() );
             } else {
@@ -141,16 +132,12 @@ public class OrderCommonService {
 
         //填充预估价格信息
         orderList = this.setPredictPrice(orderList);
-
         //填充城市名称
         orderList = this.setCityName( orderList );
-
         //补充订单类型。 1: 即时单(尽快送达，限当日订单) 2: 预约单
         orderList = this.setOrderTypeName(orderList);
-
         //做预约单的创建时间：商城的下单时间
         orderList = this.setExceptedOrderCreatTime(orderList, orderExpectMap);
-
         pageResult.setList( orderList );
 
         long endTime = new Date().getTime();
@@ -185,7 +172,6 @@ public class OrderCommonService {
         if (orderExpectMap == null || orderList== null) {
             return orderList;
         }
-
         for (OrderListItem orderListItem:orderList ) {
             //订单类型：预约单-2，1-即时单
             Integer orderType = orderListItem.getOrderType();
@@ -207,7 +193,6 @@ public class OrderCommonService {
         if (orderList == null) {
             return null;
         }
-
         for (OrderListItem orderListItem:orderList ) {
             Integer orderType = orderListItem.getOrderType();
             if (orderType == 1) {
@@ -226,7 +211,6 @@ public class OrderCommonService {
      */
     private List<OrderListItem> setPredictPrice(List<OrderListItem> orderList) {
         List<OrderListItem> resultList = new ArrayList<>();
-
         //1、分发渠道成功的，返回预估价格，还没分发成功(/失败订单)就返回null
         for (OrderListItem orderListItem:orderList ) {
             Integer channelId = orderListItem.getChannelId();
@@ -235,24 +219,20 @@ public class OrderCommonService {
                 orderListItem.setPredictPrice(null);
                 continue;
             }
-
             Integer distributeStatus = orderListItem.getDistributeStatus();
             if (distributeStatus <= 0) {
                 orderListItem.setPredictPrice(null);
             } else {
                 String orderId = orderListItem.getOrderId();
-
                 //封装参数
                 OrderPredictPrice orderPredictPrice = new OrderPredictPrice();
                 orderPredictPrice.setOrderId(orderId);
                 orderPredictPrice.setChannelId(channelId);
                 orderPredictPrice = orderPredictPriceMapper.selectByPrimaryKey( orderPredictPrice );
-
                 orderListItem.setPredictPrice( orderPredictPrice.getPredictPrice() );
             }
             resultList.add(orderListItem);
         }
-
         return orderList;
     }
 
@@ -262,11 +242,9 @@ public class OrderCommonService {
      * @return
      */
     private List<OrderListItem> setCourierData(List<OrderListItem> orderList) {
-
         if ( orderList == null ) {
             return null;
         }
-
         for (OrderListItem vo:orderList ) {
             if (vo.getDistributeStatus() == null || vo.getChannelId() == 0 ){
                 //未分发成功骑手及骑手电话默认为"-"
@@ -274,25 +252,20 @@ public class OrderCommonService {
                 vo.setCourierPhone( "-" );
                 continue;
             }
-
             Map<String, Object> params = new HashMap<>();
             params.put("channelId",  vo.getChannelId());
             params.put("orderId", vo.getOrderId());
             params.put("statusCode", vo.getStatusCode());
-
             //分发成功以后才会有配送信息（分发状态(0:未分发;1:分发渠道成功;4:订单已完成;5:订单已取消;6:订单异常;-1:失败订单))）
             if ( vo.getDistributeStatus() > 0 ) {
                 OrderDistributionStatus status = orderDistStatusMapper.queryDistStatus( params );
-
                 if( status == null ) {
                     continue;
                 }
-
                 vo.setCourierName( status.getCourierName() );
                 vo.setCourierPhone( status.getCourierPhone() );
             }
         }
-
         return orderList;
     }
 
@@ -302,16 +275,13 @@ public class OrderCommonService {
      * @return
      */
     private List<OrderListItem> setCityName(List<OrderListItem> orderList ) {
-
         if ( orderList == null ) {
             return null;
         }
-
         for (OrderListItem vo:orderList ) {
             String cityName = cityMatchService.queryCityName( vo.getCityCode() );
             vo.setCityName(cityName);
         }
-
         return orderList;
     }
 
@@ -330,12 +300,10 @@ public class OrderCommonService {
         }
 
         Map<Integer, ChannelEntity> channelMap = this.getChannelMap();
-
         for (OrderListItem item:orderList ) {
             Integer channelId = item.getChannelId();
             String orderId = item.getOrderId();
             Integer distributeStatus = item.getDistributeStatus();
-
             if (distributeStatus != null) {
                 //待完善
                Map<String, Object> result =  this.getDistributeData(channelId, orderId, distributeStatus, distributionMap);
@@ -355,7 +323,6 @@ public class OrderCommonService {
                 } else {
                     item.setChannelPeisongId("-");
                 }
-
                 //渠道名称
                 ChannelEntity channelEntity = channelMap.get(channelId);
                 if (channelEntity != null) {
@@ -388,7 +355,6 @@ public class OrderCommonService {
      */
     public OrderDetail queryOrderDetailByOrderId(Map<String, Object> request ) {
         Object orderIdObject = request.get("orderId");
-
         if ( orderIdObject == null ) {
             logger.warn(String.format("缺少订单id! orderId: %s;", orderIdObject ));
             throw new ManageException( ManageResultCode.DATA_REQUEST_ERROR, "缺少订单id" );
@@ -396,12 +362,10 @@ public class OrderCommonService {
 
         //根据订单id
         OrderDetail orderDetail = orderMapper.queryOrderDetailByOrderId( request );
-
         if(orderDetail != null ) {
             //填充城市信息
             String cityName = cityMatchService.queryCityName( orderDetail.getCityCode() );
             orderDetail.setCityName(cityName);
-
             //填充货物列表
             String orderId = (String) orderIdObject;
             List<OrderCargoItem> orderCargoItems = orderCargoListMapper.selectByOrderId( orderId );
@@ -435,32 +399,26 @@ public class OrderCommonService {
                         }
                     }
                 }
-
                 //填充配送信息
                 if ( distributeStatus > 0 && orderDetail.getChannelId()!=0 ) {
                     //填充渠道名称
                     String channelName = channelMapper.queryChannelNameByChannelId(orderDetail.getChannelId());
                     orderDetail.setChannelName(channelName);
-
                     //填充骑手信息
                     orderDetail = this.setCourierData( request, orderDetail );
-
                     //加上渠道信息查询，配送状态
                     request.put("channelId", orderDetail.getChannelId());
                     orderDisStatusList = orderDistStatusMapper.queryDistStatusList( request );
-
                     //填充预估价信息
                     OrderPredictPrice orderPredictPrice = new OrderPredictPrice();
                     orderPredictPrice.setOrderId(orderDetail.getOrderId());
                     orderPredictPrice.setChannelId( orderDetail.getChannelId() );
                     orderPredictPrice = orderPredictPriceMapper.selectByPrimaryKey(orderPredictPrice);
                     orderDetail.setPredictPrice( orderPredictPrice.getPredictPrice() );
-
                 } else if (distributeStatus == -1 || distributeStatus == 6 || distributeStatus == 5){
                     //分发成功前就失败/异常/取消的订单，价格设置成Null
                     orderDetail.setPredictPrice( null );
                     orderDisStatusList = new ArrayList<>();
-
                     OrderDistributionStatusVo placedStatusVo = new OrderDistributionStatusVo();
                     Long placedId = orderHelper.getId(null);
                     OrderDistributionStatusVo currentStatusVo = new OrderDistributionStatusVo();
@@ -478,7 +436,6 @@ public class OrderCommonService {
                     currentStatusVo.setCreateTime(orderDetail.getUpdateTime());
                     orderDisStatusList.add(placedStatusVo);
                     orderDisStatusList.add(currentStatusVo);
-
                     orderDetail.setCourierName("-");
                     orderDetail.setCourierPhone("-");
                     orderDetail.setChannelPeisongId("-");
@@ -495,7 +452,6 @@ public class OrderCommonService {
                 //预约单，还没正式发单就取消的
                 orderDisStatusList = new ArrayList<>();
                 OrderExpected orderExpected = orderExpectedMapper.selectByPrimaryKey(orderDetail.getOrderId());
-
                 orderDetail.setPredictPrice( null );
                 orderDetail.setCourierName("-");
                 orderDetail.setCourierPhone("-");
@@ -527,7 +483,6 @@ public class OrderCommonService {
                         statusCode = 2;
                         odv.setStatusCode(2);
                     }
-
                     //系统异常状态码统一处理成1000
                     if (statusCode>=7 || statusCode<0) {
                         statusCode = 1000;
@@ -536,18 +491,15 @@ public class OrderCommonService {
                     if ( statusCodeSet.contains(statusCode) ) {
                         continue;
                     }
-
                     tempList.add( odv );
                     statusCodeSet.add(odv.getStatusCode());
                 }
-
                 //运单号
                 orderDetail.setChannelPeisongId(orderDisStatusList.get(0).getChannelPeisongId());
             }
 
             //对正常流程和异常流程返回列表的区分
             List<OrderDistributionStatusVo> resultList = orderHelper.getResultList(tempList, orderDetail);
-
             if ( resultList != null && resultList.size() > 0) {
                 //做配送状态描述的映射
                 for (OrderDistributionStatusVo odv:resultList ) {
@@ -563,13 +515,10 @@ public class OrderCommonService {
                     }
                 }
             }
-
             //填充配送状态列表
             orderDetail.setOrderDistStatusList( resultList );
 
         }
-
-
         //填充预约送达时间,1: 即时单(尽快送达，限当日订单) 2: 预约单
         Integer orderType = orderDetail.getOrderType();
         if ( orderType == 2) {
@@ -611,139 +560,6 @@ public class OrderCommonService {
     }
 
     /**
-     * 查询满足条件的订单列表（导出excel，包括订单详情）
-     * @param request
-     * @return
-     */
-    /*public List<OrderExcelListItem> queryOrderExcelList(Map<String, Object> request) {
-        List<OrderExcelListItem> orderExceList = null;
-
-        //1、拿到符合条件的订单id
-        Map<String, Object> orderIdsParams = orderHelper.getOrderIdsParams(request);
-        if(orderIdsParams.get("orderIds") == null && orderIdsParams.get("orderId") == null){
-            //没有满足条件的订单
-            return null;
-        }
-        Map<String, OrderExpectedListItem> orderExpectMap = this.getAllTypeExpectedOrders(orderIdsParams);
-        Map<String, OrderPredictPrice> orderPredictPriceMap = this.getOrderPredictPrice(orderIdsParams);
-
-        //2、根据订单id查订单列表
-        orderExceList = orderMapper.queryOrderExcelList(orderIdsParams);
-
-        //statusMsg  courierName courierPhone itemName itemPrice itemQuantity money
-        //3、填充订单状态和骑手信息
-        if (orderExceList != null && orderExceList.size() != 0) {
-            for (OrderExcelListItem item:orderExceList ) {
-                //1）填充订单配送信息
-                Integer channelId = item.getChannelId();
-                String orderId = item.getOrderId();
-                Integer distributeStatus = item.getDistributeStatus();
-
-                if (distributeStatus != null) {
-                    Map<String, Object> result =  this.getDistributeData(channelId, orderId, distributeStatus);
-                    Object channelPeisongIdObject = result.get("channelPeisongId");
-                    Object channelNameObject = result.get("channelName");
-                    Object statusCodeObject = result.get("statusCode");
-                    Integer statusCode = null;
-                    if (statusCodeObject != null) {
-                        //订单配送状态
-                        statusCode = (Integer) statusCodeObject;
-                        item.setStatusCode(statusCode);
-                        //转换为显示用的订单状态
-                        item.setStatusMsg( OrderStatusEnum.getStatusMsg(statusCode) );
-                    }
-                    if (channelPeisongIdObject != null) {
-                        String channelPeisongId = (String) channelPeisongIdObject;
-                        //运单号
-                        item.setChannelPeisongId(channelPeisongId);
-                    } else {
-                        item.setChannelPeisongId("-");
-                    }
-                    if (channelNameObject != null) {
-                        String channelName = (String) channelNameObject;
-                        //渠道名称
-                        item.setChannelName(channelName);
-                    } else {
-                        item.setChannelName("-");
-                    }
-
-                    //2）填充骑手信息
-                    if ( statusCode > 1 && channelId != 0) {
-                        Map<String, Object> params = new HashMap<>();
-                        params.put("orderId", item.getOrderId());
-                        params.put("channelId",channelId );
-
-                        List<OrderDistributionStatus> distributionStatusList = orderDistStatusMapper.queryCourierData(params);
-                        if (distributeStatus!=null) {
-                            for (OrderDistributionStatus distributionStatus:distributionStatusList ) {
-                                if (distributionStatus.getCourierName()!=null && distributionStatus.getCourierPhone()!=null) {
-                                    item.setCourierName(distributionStatus.getCourierName());
-                                    item.setCourierPhone(distributionStatus.getCourierPhone());
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (item.getCourierName()==null&&item.getCourierPhone()==null){
-                        item.setCourierName( "-" );
-                        item.setCourierPhone( "-" );
-                    }
-
-                    //3）填充预估价信息
-                    OrderPredictPrice orderPredictPrice = orderPredictPriceMap.get(""+ item.getOrderId()+ item.getChannelId());
-                    if (orderPredictPrice != null) {
-                        orderPredictPrice = orderPredictPriceMapper.selectByPrimaryKey(orderPredictPrice);
-                        item.setPredictPrice( orderPredictPrice.getPredictPrice() );
-                        item.setBasePrice(orderPredictPrice.getBasePrice());
-                        item.setAddTimePrice(orderPredictPrice.getAddTimePrice());
-                        item.setAddDistancePrice(orderPredictPrice.getAddDistancePrice());
-                        item.setAddWeightPrice(orderPredictPrice.getAddWeightPrice());
-                    }
-                } else {
-                    item.setStatusCode(5);
-                    //转换为显示用的订单状态
-                    item.setStatusMsg( OrderStatusEnum.getStatusMsg(5) );
-                    item.setChannelName("-");
-                    item.setChannelPeisongId("-");
-                    item.setCourierName("-");
-                    item.setCourierPhone("-");
-                    item.setPredictPrice( null );
-                }
-            }
-
-            //4、根据订单列表查询订单的货物详情
-            for (OrderExcelListItem item:orderExceList ) {
-                String orderId = item.getOrderId();
-                List<OrderExcelCargoItem> orderCargoItems = orderCargoListMapper.selectOrderExcelCargoItemByOrderId(orderId);
-                item.setOrderCargoItems(orderCargoItems);
-            }
-        }
-
-        //补充订单类型。 1: 即时单(尽快送达，限当日订单) 2: 预约单
-        if (orderExceList != null) {
-            for (OrderExcelListItem orderExcelListItem:orderExceList ) {
-                Integer orderType = orderExcelListItem.getOrderType();
-                if (orderType == 1) {
-                    orderExcelListItem.setOrderTypeName("即时单");
-                } else if (orderType == 2){
-                    orderExcelListItem.setOrderTypeName("预约单");
-
-                    //预约单的创建时间：商城的下单时间
-                    if (orderExpectMap != null) {
-                        OrderExpectedListItem orderExpected = orderExpectMap.get(orderExcelListItem.getOrderId());
-                        if (orderExpected != null) {
-                            orderExcelListItem.setCreateTime(orderExpected.getCreateTime());
-                        }
-                    }
-                }
-            }
-        }
-
-        return orderExceList;
-    }*/
-
-    /**
      * 获取订单的配送价格及加价信息
      * @param orderIdsParams
      * @return
@@ -765,7 +581,6 @@ public class OrderCommonService {
      */
     public List<OrderExcelListItem> queryOrderExcelList(Map<String, Object> request) {
         List<OrderExcelListItem> orderExceList = null;
-
         //1、拿到符合条件的订单id
         Map<String, Object> orderIdsParams = orderHelper.getOrderIdsParams(request);
         if(orderIdsParams.get("orderIds") == null && orderIdsParams.get("orderId") == null){
@@ -790,7 +605,6 @@ public class OrderCommonService {
                 Integer channelId = item.getChannelId();
                 String orderId = item.getOrderId();
                 Integer distributeStatus = item.getDistributeStatus();
-
                 if (distributeStatus != null) {
                     //（1）订单当前状态
                     Map<String, Object> result = this.getDistributeData(channelId, orderId, distributeStatus, orderDistributeMap);
@@ -854,7 +668,6 @@ public class OrderCommonService {
                         Map<String, Object> params = new HashMap<>();
                         params.put("orderId", item.getOrderId());
                         params.put("channelId",channelId );
-
                         List<OrderDistributionStatus> distributionStatusList = orderDistStatusMapper.queryCourierData(params);
                         if (distributeStatus!=null) {
                             for (OrderDistributionStatus distributionStatus:distributionStatusList ) {
@@ -870,7 +683,6 @@ public class OrderCommonService {
                         item.setCourierName( "-" );
                         item.setCourierPhone( "-" );
                     }
-
                     //3）填充预估价信息
                     OrderPredictPrice orderPredictPrice = orderPredictPriceMap.get(""+ item.getOrderId()+ item.getChannelId());
                     if (orderPredictPrice != null) {
@@ -923,7 +735,6 @@ public class OrderCommonService {
                     orderExcelListItem.setOrderTypeName("即时单");
                 } else if (orderType == 2){
                     orderExcelListItem.setOrderTypeName("预约单");
-
                     //预约单的创建时间：商城的下单时间
                     if (orderExpectMap != null) {
                         OrderExpectedListItem orderExpected = orderExpectMap.get(orderExcelListItem.getOrderId());
@@ -934,7 +745,6 @@ public class OrderCommonService {
                 }
             }
         }
-
         return orderExceList;
     }
 
@@ -972,22 +782,15 @@ public class OrderCommonService {
 
         //唯一性签名：OrderId+channelId+statusCode
         //订单状态列表固定导出状态：门店发单	骑手接单	骑手取货	完成	已取消	异常
-
         // tb_order_distribution_status订单状态: (待接单＝1 骑士到店=100 待取货＝2 配送中＝3 已完成＝4 已取消＝5
         //已过期＝7 指派单=8 妥投异常之物品返回中=9 妥投异常之物品返回完成=10 系统故障订单发布失败=1000 可参考文末的状态说明）
         //导出状态: 门店发单＝1(1)，骑手接单=2（2，100），骑手取货=(3), 完成=(4), 已取消=(5), 异常=(7~10, 1100, 1000)
         //导出签名：statusCode
-        //1)门店发货
-        OrderDistributionStatusVo waitOrder_statusVo = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_ORDER_CODE);
-        if (waitOrder_statusVo !=null) {
-            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, waitOrder_statusVo);
-        } else {
-            OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
-            statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
-            statusVo_order.setCreateTime(orderExcelListItem.getCreateTime());
-            resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, statusVo_order);
-        }
-
+        //1)门店发单
+        OrderDistributionStatusVo statusVo_order = new OrderDistributionStatusVo();
+        statusVo_order.setStatusCode(OrderStatusEnum.WAIT_ORDER_CODE);
+        statusVo_order.setCreateTime(orderExcelListItem.getCreateTime());
+        resultStatusMap.put(OrderDistributionStatusEnum.WAIT_ORDER_CODE, statusVo_order);
         //2) 骑手接单
         OrderDistributionStatusVo waitDelivery_statusVo = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.WAIT_DELIVERY_CODE);
         OrderDistributionStatusVo waitDelivery_statusVo2 = orderDistributeStatusMap.get( orderId + channelId + OrderDistributionStatusEnum.Courier_Reach_CODE);
@@ -1095,7 +898,6 @@ public class OrderCommonService {
         if ( distributeStatus > 0 && channelId != 0 ) {
             //订单最终配送渠道的配送状态(根据订单id和渠道id确认)
             OrderDistribution orderDistribution = distributionMap.get(orderId + channelId);
-
             if(orderDistribution == null) {
                 return result;
             }

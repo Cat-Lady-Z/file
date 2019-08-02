@@ -42,7 +42,7 @@
             </throwableConverter>
         </encoder>
         <!--lbx-elk-dev-logs lbx-elk-test-logs lbx-elk-prod-logs -->
-        <topic>lbx-elk-prod-logs</topic>
+        <topic>lbx-elk-dev-logs</topic>
         <keyingStrategy class="com.github.danielwegener.logback.kafka.keying.HostNameKeyingStrategy" />
         <deliveryStrategy class="com.github.danielwegener.logback.kafka.delivery.AsynchronousDeliveryStrategy" />
         <producerConfig>bootstrap.servers=47.110.230.208:9092</producerConfig>
