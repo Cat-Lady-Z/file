@@ -41,6 +41,6 @@ spring:
  #   level:
   #     com.lbx.distribution.manageserver.mapper: debug
 logging:
-   # level:
-    #     com.lbx.distribution.manageserver.mapper: debug
-    config: classpath:logback-spring-prod.xml
+    level:
+         com.lbx.distribution.manageserver.mapper: debug
+   # config: classpath:logback-spring-prod.xml
