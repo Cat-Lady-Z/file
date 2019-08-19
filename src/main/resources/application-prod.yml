@@ -3,7 +3,7 @@ spring:
         type: com.alibaba.druid.pool.DruidDataSource
         driverClassName: com.mysql.jdbc.Driver
         druid:
-            url: jdbc:mysql://rm-bp14518o1q0906eu53o.mysql.rds.aliyuncs.com/distribution?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectRows=true
+            url: jdbc:mysql://rm-bp14518o1q0906eu53o.mysql.rds.aliyuncs.com/lbx_data_center?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&useSSL=false&useAffectRows=true
             username: lbx
             password: oeeHf9g8iX&gnj0n9tRkjRfq9gSacdWO
             initial-size: 10
@@ -41,7 +41,7 @@ configuration:
 
 logging:
     path: /home/pro/log/
-    config: classpath:logback-spring-prod.xml
+   # config: classpath:logback-spring-prod.xml
     level:
-        #com.lbx.distribution.manageserver.mapper: debug
+        com.util.file.mapper: debug
         root: info

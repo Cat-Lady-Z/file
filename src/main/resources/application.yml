@@ -8,6 +8,7 @@ server:
     #connection-timeout: 5000s
     servlet:
       context-path: /manage
+    #max-http-header-size: 8999
 
 spring:
     application:
@@ -15,7 +16,7 @@ spring:
     # 环境 dev|test|prod
     profiles:
         #active: @spring.profiles.active@
-        active: dev
+        active: prod
     # jackson时间格式化
     jackson:
         time-zone: GMT+8

@@ -3,12 +3,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.lbx.distribution</groupId>
-    <artifactId>manage-server</artifactId>
+    <groupId>com.util.file</groupId>
+    <artifactId>import-server</artifactId>
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>manage-server</name>
+    <name>import-server</name>
     <description>api-server project for Spring Boot</description>
 
     <parent>
@@ -230,6 +230,13 @@
             <artifactId>logstash-logback-encoder</artifactId>
             <version>6.1</version>
         </dependency>
+
+        <dependency>
+            <groupId>de.siegmar</groupId>
+            <artifactId>fastcsv</artifactId>
+            <version>1.0.3</version>
+        </dependency>
+
     </dependencies>
 
     <!-- 阿里云maven仓库 -->
